@@ -145,11 +145,6 @@ struct inner_product_simd_traits<double> {
     }
 };
 
-
-// inner_product_simd
-template <typename T>
-struct inner_product_simd_traits;
-
 template <>
 struct inner_product_simd_traits<int8_t> {
     using scalar_type = int8_t;
@@ -425,3 +420,64 @@ struct inner_product_simd_traits<uint64_t> {
     }
 };
 
+
+// and_simd
+template <typename T>
+struct and_simd_traits;
+
+template <typename T>
+struct and_simd_traits {
+    using scalar_type = T;
+    using simd_type = __m256i;
+    static constexpr size_t step = sizeof(__m256i) / sizeof(T);
+
+    static simd_type load(const scalar_type* ptr) noexcept {
+        return _mm256_loadu_si256(reinterpret_cast<const __m256i*>(ptr));
+    }
+
+    static void store(scalar_type* ptr, simd_type val) noexcept {
+        _mm256_storeu_si256(reinterpret_cast<__m256i*>(ptr), val);
+    }
+
+    static simd_type bitwise_and(simd_type a, simd_type b) noexcept {
+        return _mm256_and_si256(a, b);
+    }
+};
+
+template <>
+struct and_simd_traits<float> {
+    using scalar_type = float;
+    using simd_type = __m256;
+    static constexpr size_t step = 8;
+
+    static simd_type load(const scalar_type* ptr) noexcept {
+        return _mm256_loadu_ps(ptr);
+    }
+
+    static void store(scalar_type* ptr, simd_type val) noexcept {
+        _mm256_storeu_ps(ptr, val);
+    }
+
+    static simd_type bitwise_and(simd_type a, simd_type b) noexcept {
+        return _mm256_and_ps(a, b);
+    }
+};
+
+template <>
+struct and_simd_traits<double> {
+    using scalar_type = double;
+    using simd_type = __m256d;
+    static constexpr size_t step = 4;
+
+    static simd_type load(const scalar_type* ptr) noexcept {
+        return _mm256_loadu_pd(ptr);
+    }
+
+    static void store(scalar_type* ptr, simd_type val) noexcept {
+        _mm256_storeu_pd(ptr, val);
+    }
+
+    static simd_type bitwise_and(simd_type a, simd_type b) noexcept {
+        return _mm256_and_pd(a, b);
+    }
+};
