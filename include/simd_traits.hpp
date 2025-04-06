@@ -1,5 +1,5 @@
-#ifndef SIMD_TRAITS
-#define SIMD_TRAITS
+#ifndef SIMD_TRAITS_HPP
+#define SIMD_TRAITS_HPP
 
 template<typename T>
 struct linspace_simd_traits;
@@ -18,5 +18,11 @@ struct xor_simd_traits;
 
 template <typename T>
 struct andnot_simd_traits;
+
+template <typename T>
+struct testc_simd_traits;
+
+template <typename T>
+struct slli_simd_traits;
 
 #endif

@@ -58,42 +58,26 @@
 //         std::cout << item << ' ';
 // }
 
+#include <iostream>
 #include <immintrin.h>
-#include <stdio.h>
-#include <stdint.h>
+
+// 模拟 testc1 函数
+int testc1(const __m256& a, const __m256& b) {
+    // 使用 _mm256_testc_ps 进行按位测试
+    return _mm256_testc_ps(a, b);
+}
 
 int main() {
-    // 初始化两个包含 8 个单精度浮点数的 __m256 向量
-    __m256 vec1 = _mm256_set_ps(1.1f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f);
-    __m256 vec2 = _mm256_set_ps(1.1f, 7.0f, 6.0f, 5.0f, 4.0f, 3.0f, 2.0f, 1.0f);
+    // 初始化两个 __m256 向量
+    __m256 vec_a = _mm256_set_ps(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f);
+    __m256 vec_b = _mm256_set_ps(8.0f, 7.0f, 6.0f, 5.0f, 4.0f, 3.0f, 2.0f, 1.0f);
 
-    float float_vec1[] = {1.1f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f};
-    float float_vec2[] = {1.1f, 7.0f, 6.0f, 5.0f, 4.0f, 3.0f, 2.0f, 1.0f};
+    // 调用 testc1 函数进行测试
+    int result = testc1(vec_a, vec_b);
 
-    // 调用 _mm256_and_ps 执行按位与运算
-    __m256 result = _mm256_and_ps(vec1, vec2);
-
-    // 将结果存储到一个数组中
-    float output[8];
-    _mm256_storeu_ps(output, result);
-
-    // 输出 SIMD 结果
-    printf("SIMD result:\n");
-    for (int i = 7; ~i; i--) {
-        printf("The %d element: %f\n", i, output[i]);
-    }
-
-    // 输出普通结果
-    printf("Plain result:\n");
-    float plain_output[8];
-    for (int i = 0; i < 8; ++i) {
-        uint32_t int_val1 = *(uint32_t*)&float_vec1[i];
-        uint32_t int_val2 = *(uint32_t*)&float_vec2[i];
-        uint32_t and_result = int_val1 & int_val2;
-        plain_output[i] = *(float*)&and_result;
-        printf("The %d element: %f\n", i, plain_output[i]);
-    }
+    // 输出测试结果
+    std::cout << "Testc1 result: " << result << std::endl;
 
     return 0;
-}
+}    
     

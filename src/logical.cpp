@@ -78,7 +78,7 @@ namespace internal {
     }
 
 
-    // andnot_simd
+    // andnot1_simd
     template <typename T>
     std::vector<T> andnot1_simd(const std::vector<T>& A, const std::vector<T>& B) {
         if (A.size() != B.size())
@@ -98,6 +98,29 @@ namespace internal {
         for (; i < A.size(); ++i) {
             result[i] = ~A[i] & B[i];
         }
+
+        return result;
+    }
+
+
+    // testc1_simd
+    template <typename T>
+    int testc1_simd(const std::vector<T>& A, const std::vector<T>& B) {
+        if (A.size() != B.size())
+            throw std::invalid_argument("Input vectors must have the same size.");
+
+        int result = 1;
+        const size_t simd_step = andnot_simd_traits<T>::step;
+        size_t i = 0;
+
+        for (; i <= A.size() - simd_step; i += simd_step) {
+            auto vec_a = testc_simd_traits<T>::load(&A[i]);
+            auto vec_b = testc_simd_traits<T>::load(&B[i]);
+            result &= testc_simd_traits<T>::bitwise_testc(vec_a, vec_b);
+        }
+
+        for (; i < A.size(); ++i)
+            result &= !(~A[i] & B[i]);
 
         return result;
     }

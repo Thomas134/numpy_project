@@ -1,5 +1,5 @@
-#ifndef LOGICAL
-#define LOGICAL
+#ifndef LOGICAL_HPP
+#define LOGICAL_HPP
 
 #include <vector>
 
@@ -22,6 +22,11 @@ namespace internal {
     // andnot1
     template <typename T>
     std::vector<T> andnot1_simd(const std::vector<T>& A, const std::vector<T>& B);
+
+
+    // testc1
+    template <typename T>
+    std::vector<T> testc1_simd(const std::vector<T>& A, const std::vector<T>& B);
 }
 
 #endif
