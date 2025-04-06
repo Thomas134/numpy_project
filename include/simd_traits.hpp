@@ -13,4 +13,10 @@ struct and_simd_traits;
 template <typename T>
 struct or_simd_traits;
 
+template <typename T>
+struct xor_simd_traits;
+
+template <typename T>
+struct andnot_simd_traits;
+
 #endif
