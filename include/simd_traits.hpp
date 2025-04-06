@@ -2,6 +2,11 @@
 #define SIMD_TRAITS
 
 template<typename T>
-struct simd_traits;
+struct linspace_simd_traits;
+
+
+// ================== SIMD ÌØĞÔÄ£°å ==================
+template <typename T>
+struct inner_product_simd_traits;
 
 #endif
