@@ -7,6 +7,11 @@ namespace internal {
     // and1
     template <typename T>
     std::vector<T> and1_simd(const std::vector<T>& A, const std::vector<T>& B);
+
+
+    // or1
+    template <typename T>
+    std::vector<T> or1_simd(const std::vector<T>& A, const std::vector<T>& B);
 }
 
 #endif

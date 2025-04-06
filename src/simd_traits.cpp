@@ -481,3 +481,65 @@ struct and_simd_traits<double> {
         return _mm256_and_pd(a, b);
     }
 };
+
+
+// or_simd
+template <typename T>
+struct or_simd_traits;
+
+template <typename T>
+struct or_simd_traits {
+    using scalar_type = T;
+    using simd_type = __m256i;
+    static constexpr size_t step = sizeof(__m256i) / sizeof(T);
+
+    static simd_type load(const scalar_type* ptr) noexcept {
+        return _mm256_loadu_si256(reinterpret_cast<const __m256i*>(ptr));
+    }
+
+    static void store(scalar_type* ptr, simd_type val) noexcept {
+        _mm256_storeu_si256(reinterpret_cast<__m256i*>(ptr), val);
+    }
+
+    static simd_type bitwise_or(simd_type a, simd_type b) noexcept {
+        return _mm256_or_si256(a, b);
+    }
+};
+
+template <>
+struct or_simd_traits<float> {
+    using scalar_type = float;
+    using simd_type = __m256;
+    static constexpr size_t step = 8;
+
+    static simd_type load(const scalar_type* ptr) noexcept {
+        return _mm256_loadu_ps(ptr);
+    }
+
+    static void store(scalar_type* ptr, simd_type val) noexcept {
+        _mm256_storeu_ps(ptr, val);
+    }
+
+    static simd_type bitwise_or(simd_type a, simd_type b) noexcept {
+        return _mm256_or_ps(a, b);
+    }
+};
+
+template <>
+struct or_simd_traits<double> {
+    using scalar_type = double;
+    using simd_type = __m256d;
+    static constexpr size_t step = 4;
+
+    static simd_type load(const scalar_type* ptr) noexcept {
+        return _mm256_loadu_pd(ptr);
+    }
+
+    static void store(scalar_type* ptr, simd_type val) noexcept {
+        _mm256_storeu_pd(ptr, val);
+    }
+
+    static simd_type bitwise_or(simd_type a, simd_type b) noexcept {
+        return _mm256_or_pd(a, b);
+    }
+};

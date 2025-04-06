@@ -10,4 +10,7 @@ struct inner_product_simd_traits;
 template <typename T>
 struct and_simd_traits;
 
+template <typename T>
+struct or_simd_traits;
+
 #endif
