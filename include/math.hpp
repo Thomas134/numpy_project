@@ -28,6 +28,11 @@ namespace internal {
     // rsqrt1
     template <typename T>
     std::vector<T> rsqrt1_simd(const std::vector<T>& A);
+
+
+    // round1
+    template <typename T>
+    std::vector<T> round1_simd(const std::vector<T>& A);
 }
 
 #endif

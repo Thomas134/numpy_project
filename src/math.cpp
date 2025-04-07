@@ -141,4 +141,29 @@ namespace internal {
 
         return result;
     }
+
+
+    // round1_simd
+    template <typename T>
+    std::vector<T> round_simd(const std::vector<T>& A) {
+        static_assert(std::is_same_v<T, float> || std::is_same_v<T, double>);
+
+        if (A.empty())
+            throw std::invalid_argument("Input vector can't be empty");
+    
+        std::vector<T> result(A.size());
+        size_t i = 0;
+        const size_t simd_step = round_simd_traits<T>::step;
+    
+        for (; i <= A.size() - simd_step; i += simd_step) {
+            auto vec_a = round_simd_traits<T>::load(&A[i]);
+            auto vec_result = round_simd_traits<T>::round(vec_a);
+            round_simd_traits<T>::store(&result[i], vec_result);
+        }
+    
+        for (; i < A.size(); ++i)
+            result[i] = std::round(A[i]);
+    
+        return result;
+    }
 }

@@ -46,4 +46,7 @@ struct sqrt_simd_traits;
 template <typename T>
 struct rsqrt_simd_traits;
 
+template <typename T>
+struct round_simd_traits;
+
 #endif

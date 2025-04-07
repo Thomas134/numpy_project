@@ -1199,3 +1199,46 @@ struct rsqrt_simd_traits<float> {
         return _mm256_rsqrt_ps(a);
     }
 };
+
+
+// round_simd
+template <typename T>
+struct round_simd_traits;
+
+template <>
+struct round_simd_traits<float> {
+    using scalar_type = float;
+    using simd_type = __m256;
+    static constexpr size_t step = 8;
+
+    static simd_type load(const scalar_type *ptr) noexcept {
+        return _mm256_loadu_ps(ptr);
+    }
+
+    static void store(scalar_type *ptr, simd_type val) noexcept {
+        _mm256_storeu_ps(ptr, val);
+    }
+
+    static simd_type round(simd_type a) noexcept {
+        return _mm256_round_ps(a, _MM_FROUND_TO_NEAREST_INT);
+    }
+};
+
+template <>
+struct round_simd_traits<double> {
+    using scalar_type = double;
+    using simd_type = __m256d;
+    static constexpr size_t step = 4;
+
+    static simd_type load(const scalar_type *ptr) noexcept {
+        return _mm256_loadu_pd(ptr);
+    }
+
+    static void store(scalar_type *ptr, simd_type val) noexcept {
+        _mm256_storeu_pd(ptr, val);
+    }
+
+    static simd_type round(simd_type a) noexcept {
+        return _mm256_round_pd(a, _MM_FROUND_TO_NEAREST_INT);
+    }
+};
