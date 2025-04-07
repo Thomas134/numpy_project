@@ -5,6 +5,8 @@
 #include <vector>
 
 namespace internal {
+    // ================================= 1D ====================================
+
     // inner_product_simd
     template <typename T>
     typename inner_product_simd_traits<T>::accum_type inner_product_simd(const std::vector<T>& A, const std::vector<T>& B);
@@ -43,6 +45,45 @@ namespace internal {
     // floor1
     template <typename T>
     std::vector<T> floor1_simd(const std::vector<T>& A);
+
+
+    // ================================= 2D ====================================
+
+    // min2
+    template <typename T>
+    std::vector<std::vector<T>> min2_simd(const std::vector<std::vector<T>>& A, 
+                                          const std::vector<std::vector<T>>& B);
+
+
+    // max2
+    template <typename T>
+    std::vector<std::vector<T>> max2_simd(const std::vector<std::vector<T>>& A, 
+                                          const std::vector<std::vector<T>>& B);
+
+
+    // sqrt2
+    template <typename T>
+    std::vector<std::vector<T>> sqrt2_simd(const std::vector<std::vector<T>>& A);
+
+
+    // rsqrt2
+    template <typename T>
+    std::vector<std::vector<T>> rsqrt2_simd(const std::vector<std::vector<T>>& A);
+
+
+    // round2
+    template <typename T>
+    std::vector<std::vector<T>> round2_simd(const std::vector<std::vector<T>>& A);
+
+    
+    // ceil2
+    template <typename T>
+    std::vector<std::vector<T>> ceil2_simd(const std::vector<std::vector<T>>& A);
+
+
+    // floor2
+    template <typename T>
+    std::vector<std::vector<T>> floor2_simd(const std::vector<std::vector<T>>& A);
 }
 
 #endif

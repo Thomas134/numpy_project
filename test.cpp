@@ -61,23 +61,19 @@
 #include <iostream>
 #include <immintrin.h>
 
-// 模拟 testc1 函数
-int testc1(const __m256& a, const __m256& b) {
-    // 使用 _mm256_testc_ps 进行按位测试
-    return _mm256_testc_ps(a, b);
-}
-
 int main() {
-    // 初始化两个 __m256 向量
-    __m256 vec_a = _mm256_set_ps(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f);
-    __m256 vec_b = _mm256_set_ps(8.0f, 7.0f, 6.0f, 5.0f, 4.0f, 3.0f, 2.0f, 1.0f);
+    // 初始化一个 __m128 向量
+    __m128 source_vector = _mm_set_ps(4.0f, 3.0f, 2.0f, 1.0f);
 
-    // 调用 testc1 函数进行测试
-    int result = testc1(vec_a, vec_b);
+    // 调用 _mm256_broadcast_ps 函数
+    __m256 broadcasted_vector = _mm256_broadcast_ps(&source_vector);
 
-    // 输出测试结果
-    std::cout << "Testc1 result: " << result << std::endl;
+    // 提取向量中的值并打印
+    float result[8];
+    _mm256_storeu_ps(result, broadcasted_vector);
+    for (int i = 0; i < 8; ++i) {
+        std::cout << "Element " << i << ": " << result[i] << std::endl;
+    }
 
     return 0;
-}    
-    
+}
