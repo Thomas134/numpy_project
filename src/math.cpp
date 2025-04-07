@@ -91,4 +91,54 @@ namespace internal {
 
         return result;
     }
+
+
+    // sqrt1_simd
+    template <typename T>
+    std::vector<T> sqrt1_simd(const std::vector<T>& A) {
+        static_assert(std::is_same_v<T, float> || std::is_same_v<T, double>);
+
+        if (A.empty())
+            throw std::invalid_argument("Input vector can't be empty");
+
+        std::vector<T> result(A.size());
+        size_t i = 0;
+        const size_t simd_step = sqrt_simd_traits<T>::step;
+
+        for (; i <= A.size() - simd_step; i += simd_step) {
+            auto vec_a = sqrt_simd_traits<T>::load(&A[i]);
+            auto vec_result = sqrt_simd_traits<T>::sqrt(vec_a);
+            sqrt_simd_traits<T>::store(&result[i], vec_result);
+        }
+
+        for (; i < A.size(); ++i)
+            result[i] = std::sqrt(A[i]);
+
+        return result;
+    }
+
+
+    // rsqrt1_simd
+    template <typename T>
+    std::vector<T> rsqrt1_simd(const std::vector<T>& A) {
+        static_assert(std::is_same_v<T, float>);
+
+        if (A.empty())
+            throw std::invalid_argument("Input vector can't be empty");
+
+        std::vector<T> result(A.size());
+        size_t i = 0;
+        const size_t simd_step = rsqrt_simd_traits<T>::step;
+
+        for (; i <= A.size() - simd_step; i += simd_step) {
+            auto vec_a = rsqrt_simd_traits<T>::load(&A[i]);
+            auto vec_result = rsqrt_simd_traits<T>::rsqrt(vec_a);
+            rsqrt_simd_traits<T>::store(&result[i], vec_result);
+        }
+
+        for (; i < A.size(); ++i)
+            result[i] = 1.0 / std::sqrt(A[i]);
+
+        return result;
+    }
 }

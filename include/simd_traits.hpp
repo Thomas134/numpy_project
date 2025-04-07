@@ -40,4 +40,10 @@ struct min_simd_traits;
 template <typename T>
 struct max_simd_traits;
 
+template <typename T>
+struct sqrt_simd_traits;
+
+template <typename T>
+struct rsqrt_simd_traits;
+
 #endif

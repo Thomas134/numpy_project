@@ -1132,3 +1132,70 @@ struct max_simd_traits<double> {
         return _mm256_max_pd(a, b);
     }
 };
+
+
+// sqrt_simd
+template <typename T>
+struct sqrt_simd_traits;
+
+template <>
+struct sqrt_simd_traits<float> {
+    using scalar_type = float;
+    using simd_type = __m256;
+    static constexpr size_t step = 8;
+
+    static simd_type load(const scalar_type *ptr) noexcept {
+        return _mm256_loadu_ps(ptr);
+    }
+
+    static void store(scalar_type *ptr, simd_type val) noexcept {
+        _mm256_storeu_ps(ptr, val);
+    }
+
+    static simd_type sqrt(simd_type a) noexcept {
+        return _mm256_sqrt_ps(a);
+    }
+};
+
+template <>
+struct sqrt_simd_traits<double> {
+    using scalar_type = double;
+    using simd_type = __m256d;
+    static constexpr size_t step = 4;
+
+    static simd_type load(const scalar_type *ptr) noexcept {
+        return _mm256_loadu_pd(ptr);
+    }
+
+    static void store(scalar_type *ptr, simd_type val) noexcept {
+        _mm256_storeu_pd(ptr, val);
+    }
+
+    static simd_type sqrt(simd_type a) noexcept {
+        return _mm256_sqrt_pd(a);
+    }
+};
+
+
+// rsqrt_simd
+template <typename T>
+struct rsqrt_simd_traits;
+
+template <>
+struct rsqrt_simd_traits<float> {
+    using scalar_type = float;
+    using simd_type = __m256;
+    static constexpr size_t step = 8;
+
+    static simd_type load(const scalar_type *ptr) noexcept {
+        return _mm256_loadu_ps(ptr);
+    }
+
+    static void store(scalar_type *ptr, simd_type val) noexcept {
+        _mm256_storeu_ps(ptr, val);
+    }
+
+    static simd_type rsqrt(simd_type a) noexcept {
+        return _mm256_rsqrt_ps(a);
+    }
+};

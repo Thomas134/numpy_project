@@ -18,6 +18,16 @@ namespace internal {
     // max1
     template <typename T>
     std::vector<T> max1_simd(const std::vector<T>& A, const std::vector<T>& B);
+
+
+    // sqrt1
+    template <typename T>
+    std::vector<T> sqrt1_simd(const std::vector<T>& A);
+
+
+    // rsqrt1
+    template <typename T>
+    std::vector<T> rsqrt1_simd(const std::vector<T>& A);
 }
 
 #endif
