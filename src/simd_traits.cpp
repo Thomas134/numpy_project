@@ -440,7 +440,7 @@ struct and_simd_traits {
         _mm256_storeu_si256(reinterpret_cast<__m256i*>(ptr), val);
     }
 
-    static simd_type bitwise_and(simd_type a, simd_type b) noexcept {
+    static simd_type op(simd_type a, simd_type b) noexcept {
         return _mm256_and_si256(a, b);
     }
 };
@@ -459,7 +459,7 @@ struct and_simd_traits<float> {
         _mm256_storeu_ps(ptr, val);
     }
 
-    static simd_type bitwise_and(simd_type a, simd_type b) noexcept {
+    static simd_type op(simd_type a, simd_type b) noexcept {
         return _mm256_and_ps(a, b);
     }
 };
@@ -478,7 +478,7 @@ struct and_simd_traits<double> {
         _mm256_storeu_pd(ptr, val);
     }
 
-    static simd_type bitwise_and(simd_type a, simd_type b) noexcept {
+    static simd_type op(simd_type a, simd_type b) noexcept {
         return _mm256_and_pd(a, b);
     }
 };
@@ -502,7 +502,7 @@ struct or_simd_traits {
         _mm256_storeu_si256(reinterpret_cast<__m256i*>(ptr), val);
     }
 
-    static simd_type bitwise_or(simd_type a, simd_type b) noexcept {
+    static simd_type op(simd_type a, simd_type b) noexcept {
         return _mm256_or_si256(a, b);
     }
 };
@@ -521,7 +521,7 @@ struct or_simd_traits<float> {
         _mm256_storeu_ps(ptr, val);
     }
 
-    static simd_type bitwise_or(simd_type a, simd_type b) noexcept {
+    static simd_type op(simd_type a, simd_type b) noexcept {
         return _mm256_or_ps(a, b);
     }
 };
@@ -540,7 +540,7 @@ struct or_simd_traits<double> {
         _mm256_storeu_pd(ptr, val);
     }
 
-    static simd_type bitwise_or(simd_type a, simd_type b) noexcept {
+    static simd_type op(simd_type a, simd_type b) noexcept {
         return _mm256_or_pd(a, b);
     }
 };
@@ -564,7 +564,7 @@ struct xor_simd_traits {
         _mm256_storeu_si256(reinterpret_cast<__m256i*>(ptr), val);
     }
 
-    static simd_type bitwise_xor(simd_type a, simd_type b) noexcept {
+    static simd_type op(simd_type a, simd_type b) noexcept {
         return _mm256_xor_si256(a, b);
     }
 };
@@ -583,7 +583,7 @@ struct xor_simd_traits<float> {
         _mm256_storeu_ps(ptr, val);
     }
 
-    static simd_type bitwise_xor(simd_type a, simd_type b) noexcept {
+    static simd_type op(simd_type a, simd_type b) noexcept {
         return _mm256_xor_ps(a, b);
     }
 };
@@ -602,7 +602,7 @@ struct xor_simd_traits<double> {
         _mm256_storeu_pd(ptr, val);
     }
 
-    static simd_type bitwise_xor(simd_type a, simd_type b) noexcept {
+    static simd_type op(simd_type a, simd_type b) noexcept {
         return _mm256_xor_pd(a, b);
     }
 };
@@ -626,7 +626,7 @@ struct andnot_simd_traits {
         _mm256_storeu_si256(reinterpret_cast<__m256i*>(ptr), val);
     }
 
-    static simd_type bitwise_andnot(simd_type a, simd_type b) noexcept {
+    static simd_type op(simd_type a, simd_type b) noexcept {
         return _mm256_andnot_si256(a, b);
     }
 };
@@ -645,7 +645,7 @@ struct andnot_simd_traits<float> {
         _mm256_storeu_ps(ptr, val);
     }
 
-    static simd_type bitwise_andnot(simd_type a, simd_type b) noexcept {
+    static simd_type op(simd_type a, simd_type b) noexcept {
         return _mm256_andnot_ps(a, b);
     }
 };
@@ -664,7 +664,7 @@ struct andnot_simd_traits<double> {
         _mm256_storeu_pd(ptr, val);
     }
 
-    static simd_type bitwise_andnot(simd_type a, simd_type b) noexcept {
+    static simd_type op(simd_type a, simd_type b) noexcept {
         return _mm256_andnot_pd(a, b);
     }
 };
@@ -684,7 +684,7 @@ struct testc_simd_traits {
         return _mm256_loadu_si256(reinterpret_cast<const __m256i*>(ptr));
     }
 
-    static int bitwise_testc(simd_type a, simd_type b) noexcept {
+    static int op(simd_type a, simd_type b) noexcept {
         return _mm256_testc_si256(a, b);
     }
 };
@@ -699,7 +699,7 @@ struct testc_simd_traits<float> {
         return _mm256_loadu_ps(ptr);
     }
 
-    static int bitwise_testc(simd_type a, simd_type b) noexcept {
+    static int op(simd_type a, simd_type b) noexcept {
         return _mm256_testc_ps(a, b);
     }
 };
@@ -714,7 +714,7 @@ struct testc_simd_traits<double> {
         return _mm256_loadu_pd(ptr);
     }
 
-    static int bitwise_testc(simd_type a, simd_type b) noexcept {
+    static int op(simd_type a, simd_type b) noexcept {
         return _mm256_testc_pd(a, b);
     }
 };
@@ -738,7 +738,7 @@ struct slli_simd_traits {
         _mm256_storeu_si256(reinterpret_cast<__m256i*>(ptr), val);
     }
 
-    static simd_type bitwise_slli(simd_type a, int imm8) noexcept {
+    static simd_type op(simd_type a, int imm8) noexcept {
         return _mm256_slli_si256(a, imm8);
     }
 };
@@ -762,7 +762,7 @@ struct srli_simd_traits {
         _mm256_storeu_si256(reinterpret_cast<__m256i*>(ptr), val);
     }
 
-    static simd_type bitwise_srli(simd_type a, int imm8) noexcept {
+    static simd_type op(simd_type a, int imm8) noexcept {
         return _mm256_srli_si256(a, imm8);
     }
 };
@@ -788,7 +788,7 @@ struct sm4rnds4_simd_traits {
         _mm256_storeu_si256(reinterpret_cast<__m256i *>(ptr), val);
     }
 
-    static simd_type sm4rnds4(simd_type a, simd_type b) noexcept {
+    static simd_type op(simd_type a, simd_type b) noexcept {
         return _mm256_sm4rnds4_epi32(a, b);
     }
 };
@@ -814,7 +814,7 @@ struct sm4key4_simd_traits {
         _mm256_storeu_si256(reinterpret_cast<__m256i *>(ptr), val);
     }
 
-    static simd_type sm4key4(simd_type a, simd_type b) noexcept {
+    static simd_type op(simd_type a, simd_type b) noexcept {
         return _mm256_sm4key4_epi32(a, b);
     }
 };
@@ -838,7 +838,7 @@ struct min_simd_traits<int8_t> {
         _mm256_storeu_si256(reinterpret_cast<__m256i *>(ptr), val);
     }
 
-    static simd_type min(simd_type a, simd_type b) noexcept {
+    static simd_type op(simd_type a, simd_type b) noexcept {
         return _mm256_min_epi8(a, b);
     }
 };
@@ -857,7 +857,7 @@ struct min_simd_traits<uint8_t> {
         _mm256_storeu_si256(reinterpret_cast<__m256i *>(ptr), val);
     }
 
-    static simd_type min(simd_type a, simd_type b) noexcept {
+    static simd_type op(simd_type a, simd_type b) noexcept {
         return _mm256_min_epu8(a, b);
     }
 };
@@ -876,7 +876,7 @@ struct min_simd_traits<int16_t> {
         _mm256_storeu_si256(reinterpret_cast<__m256i *>(ptr), val);
     }
 
-    static simd_type min(simd_type a, simd_type b) noexcept {
+    static simd_type op(simd_type a, simd_type b) noexcept {
         return _mm256_min_epi16(a, b);
     }
 };
@@ -895,7 +895,7 @@ struct min_simd_traits<uint16_t> {
         _mm256_storeu_si256(reinterpret_cast<__m256i *>(ptr), val);
     }
 
-    static simd_type min(simd_type a, simd_type b) noexcept {
+    static simd_type op(simd_type a, simd_type b) noexcept {
         return _mm256_min_epu16(a, b);
     }
 };
@@ -914,7 +914,7 @@ struct min_simd_traits<int32_t> {
         _mm256_storeu_si256(reinterpret_cast<__m256i *>(ptr), val);
     }
 
-    static simd_type min(simd_type a, simd_type b) noexcept {
+    static simd_type op(simd_type a, simd_type b) noexcept {
         return _mm256_min_epi32(a, b);
     }
 };
@@ -933,7 +933,7 @@ struct min_simd_traits<uint32_t> {
         _mm256_storeu_si256(reinterpret_cast<__m256i *>(ptr), val);
     }
 
-    static simd_type min(simd_type a, simd_type b) noexcept {
+    static simd_type op(simd_type a, simd_type b) noexcept {
         return _mm256_min_epu32(a, b);
     }
 };
@@ -952,7 +952,7 @@ struct min_simd_traits<float> {
         _mm256_storeu_ps(ptr, val);
     }
 
-    static simd_type min(simd_type a, simd_type b) noexcept {
+    static simd_type op(simd_type a, simd_type b) noexcept {
         return _mm256_min_ps(a, b);
     }
 };
@@ -971,7 +971,7 @@ struct min_simd_traits<double> {
         _mm256_storeu_pd(ptr, val);
     }
 
-    static simd_type min(simd_type a, simd_type b) noexcept {
+    static simd_type op(simd_type a, simd_type b) noexcept {
         return _mm256_min_pd(a, b);
     }
 };
@@ -995,7 +995,7 @@ struct max_simd_traits<int8_t> {
         _mm256_storeu_si256(reinterpret_cast<__m256i *>(ptr), val);
     }
 
-    static simd_type max(simd_type a, simd_type b) noexcept {
+    static simd_type op(simd_type a, simd_type b) noexcept {
         return _mm256_max_epi8(a, b);
     }
 };
@@ -1014,7 +1014,7 @@ struct max_simd_traits<uint8_t> {
         _mm256_storeu_si256(reinterpret_cast<__m256i *>(ptr), val);
     }
 
-    static simd_type max(simd_type a, simd_type b) noexcept {
+    static simd_type op(simd_type a, simd_type b) noexcept {
         return _mm256_max_epu8(a, b);
     }
 };
@@ -1033,7 +1033,7 @@ struct max_simd_traits<int16_t> {
         _mm256_storeu_si256(reinterpret_cast<__m256i *>(ptr), val);
     }
 
-    static simd_type max(simd_type a, simd_type b) noexcept {
+    static simd_type op(simd_type a, simd_type b) noexcept {
         return _mm256_max_epi16(a, b);
     }
 };
@@ -1052,7 +1052,7 @@ struct max_simd_traits<uint16_t> {
         _mm256_storeu_si256(reinterpret_cast<__m256i *>(ptr), val);
     }
 
-    static simd_type max(simd_type a, simd_type b) noexcept {
+    static simd_type op(simd_type a, simd_type b) noexcept {
         return _mm256_max_epu16(a, b);
     }
 };
@@ -1071,7 +1071,7 @@ struct max_simd_traits<int32_t> {
         _mm256_storeu_si256(reinterpret_cast<__m256i *>(ptr), val);
     }
 
-    static simd_type max(simd_type a, simd_type b) noexcept {
+    static simd_type op(simd_type a, simd_type b) noexcept {
         return _mm256_max_epi32(a, b);
     }
 };
@@ -1090,7 +1090,7 @@ struct max_simd_traits<uint32_t> {
         _mm256_storeu_si256(reinterpret_cast<__m256i *>(ptr), val);
     }
 
-    static simd_type max(simd_type a, simd_type b) noexcept {
+    static simd_type op(simd_type a, simd_type b) noexcept {
         return _mm256_max_epu32(a, b);
     }
 };
@@ -1109,7 +1109,7 @@ struct max_simd_traits<float> {
         _mm256_storeu_ps(ptr, val);
     }
 
-    static simd_type max(simd_type a, simd_type b) noexcept {
+    static simd_type op(simd_type a, simd_type b) noexcept {
         return _mm256_max_ps(a, b);
     }
 };
@@ -1128,7 +1128,7 @@ struct max_simd_traits<double> {
         _mm256_storeu_pd(ptr, val);
     }
 
-    static simd_type max(simd_type a, simd_type b) noexcept {
+    static simd_type op(simd_type a, simd_type b) noexcept {
         return _mm256_max_pd(a, b);
     }
 };
@@ -1152,7 +1152,7 @@ struct sqrt_simd_traits<float> {
         _mm256_storeu_ps(ptr, val);
     }
 
-    static simd_type sqrt(simd_type a) noexcept {
+    static simd_type op(simd_type a) noexcept {
         return _mm256_sqrt_ps(a);
     }
 };
@@ -1171,7 +1171,7 @@ struct sqrt_simd_traits<double> {
         _mm256_storeu_pd(ptr, val);
     }
 
-    static simd_type sqrt(simd_type a) noexcept {
+    static simd_type op(simd_type a) noexcept {
         return _mm256_sqrt_pd(a);
     }
 };
@@ -1195,7 +1195,7 @@ struct rsqrt_simd_traits<float> {
         _mm256_storeu_ps(ptr, val);
     }
 
-    static simd_type rsqrt(simd_type a) noexcept {
+    static simd_type op(simd_type a) noexcept {
         return _mm256_rsqrt_ps(a);
     }
 };
@@ -1219,7 +1219,7 @@ struct round_simd_traits<float> {
         _mm256_storeu_ps(ptr, val);
     }
 
-    static simd_type round(simd_type a) noexcept {
+    static simd_type op(simd_type a) noexcept {
         return _mm256_round_ps(a, _MM_FROUND_TO_NEAREST_INT);
     }
 };
@@ -1238,7 +1238,7 @@ struct round_simd_traits<double> {
         _mm256_storeu_pd(ptr, val);
     }
 
-    static simd_type round(simd_type a) noexcept {
+    static simd_type op(simd_type a) noexcept {
         return _mm256_round_pd(a, _MM_FROUND_TO_NEAREST_INT);
     }
 };
@@ -1262,7 +1262,7 @@ struct ceil_simd_traits<float> {
         _mm256_storeu_ps(ptr, val);
     }
 
-    static simd_type ceil(simd_type a) noexcept {
+    static simd_type op(simd_type a) noexcept {
         return _mm256_ceil_ps(a);
     }
 };
@@ -1281,7 +1281,7 @@ struct ceil_simd_traits<double> {
         _mm256_storeu_pd(ptr, val);
     }
 
-    static simd_type ceil(simd_type a) noexcept {
+    static simd_type op(simd_type a) noexcept {
         return _mm256_ceil_pd(a);
     }
 };
@@ -1305,7 +1305,7 @@ struct floor_simd_traits<float> {
         _mm256_storeu_ps(ptr, val);
     }
 
-    static simd_type floor(simd_type a) noexcept {
+    static simd_type op(simd_type a) noexcept {
         return _mm256_floor_ps(a);
     }
 };
@@ -1324,7 +1324,7 @@ struct floor_simd_traits<double> {
         _mm256_storeu_pd(ptr, val);
     }
 
-    static simd_type floor(simd_type a) noexcept {
+    static simd_type op(simd_type a) noexcept {
         return _mm256_floor_pd(a);
     }
 };
@@ -1348,7 +1348,7 @@ struct abs_simd_traits<int8_t> {
         _mm256_storeu_si256(reinterpret_cast<__m256i *>(ptr), val);
     }
 
-    static simd_type abs(simd_type a) noexcept {
+    static simd_type op(simd_type a) noexcept {
         return _mm256_abs_epi8(a);
     }
 };
@@ -1367,7 +1367,7 @@ struct abs_simd_traits<int16_t> {
         _mm256_storeu_si256(reinterpret_cast<__m256i *>(ptr), val);
     }
 
-    static simd_type abs(simd_type a) noexcept {
+    static simd_type op(simd_type a) noexcept {
         return _mm256_abs_epi16(a);
     }
 };
@@ -1386,7 +1386,7 @@ struct abs_simd_traits<int32_t> {
         _mm256_storeu_si256(reinterpret_cast<__m256i *>(ptr), val);
     }
 
-    static simd_type abs(simd_type a) noexcept {
+    static simd_type op(simd_type a) noexcept {
         return _mm256_abs_epi32(a);
     }
 };
