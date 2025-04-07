@@ -49,4 +49,10 @@ struct rsqrt_simd_traits;
 template <typename T>
 struct round_simd_traits;
 
+template <typename T>
+struct ceil_simd_traits;
+
+template <typename T>
+struct floor_simd_traits;
+
 #endif

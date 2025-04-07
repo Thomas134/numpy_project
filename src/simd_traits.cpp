@@ -1242,3 +1242,89 @@ struct round_simd_traits<double> {
         return _mm256_round_pd(a, _MM_FROUND_TO_NEAREST_INT);
     }
 };
+
+
+// ceil_simd
+template <typename T>
+struct ceil_simd_traits;
+
+template <>
+struct ceil_simd_traits<float> {
+    using scalar_type = float;
+    using simd_type = __m256;
+    static constexpr size_t step = 8;
+
+    static simd_type load(const scalar_type *ptr) noexcept {
+        return _mm256_loadu_ps(ptr);
+    }
+
+    static void store(scalar_type *ptr, simd_type val) noexcept {
+        _mm256_storeu_ps(ptr, val);
+    }
+
+    static simd_type ceil(simd_type a) noexcept {
+        return _mm256_ceil_ps(a);
+    }
+};
+
+template <>
+struct ceil_simd_traits<double> {
+    using scalar_type = double;
+    using simd_type = __m256d;
+    static constexpr size_t step = 4;
+
+    static simd_type load(const scalar_type *ptr) noexcept {
+        return _mm256_loadu_pd(ptr);
+    }
+
+    static void store(scalar_type *ptr, simd_type val) noexcept {
+        _mm256_storeu_pd(ptr, val);
+    }
+
+    static simd_type ceil(simd_type a) noexcept {
+        return _mm256_ceil_pd(a);
+    }
+};
+
+
+// floor_simd
+template <typename T>
+struct floor_simd_traits;
+
+template <>
+struct floor_simd_traits<float> {
+    using scalar_type = float;
+    using simd_type = __m256;
+    static constexpr size_t step = 8;
+
+    static simd_type load(const scalar_type *ptr) noexcept {
+        return _mm256_loadu_ps(ptr);
+    }
+
+    static void store(scalar_type *ptr, simd_type val) noexcept {
+        _mm256_storeu_ps(ptr, val);
+    }
+
+    static simd_type floor(simd_type a) noexcept {
+        return _mm256_floor_ps(a);
+    }
+};
+
+template <>
+struct floor_simd_traits<double> {
+    using scalar_type = double;
+    using simd_type = __m256d;
+    static constexpr size_t step = 4;
+
+    static simd_type load(const scalar_type *ptr) noexcept {
+        return _mm256_loadu_pd(ptr);
+    }
+
+    static void store(scalar_type *ptr, simd_type val) noexcept {
+        _mm256_storeu_pd(ptr, val);
+    }
+
+    static simd_type floor(simd_type a) noexcept {
+        return _mm256_floor_pd(a);
+    }
+};

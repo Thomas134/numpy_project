@@ -33,6 +33,16 @@ namespace internal {
     // round1
     template <typename T>
     std::vector<T> round1_simd(const std::vector<T>& A);
+
+
+    // ceil1
+    template <typename T>
+    std::vector<T> ceil1_simd(const std::vector<T>& A);
+
+    
+    // floor1
+    template <typename T>
+    std::vector<T> floor1_simd(const std::vector<T>& A);
 }
 
 #endif

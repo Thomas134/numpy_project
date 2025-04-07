@@ -145,7 +145,7 @@ namespace internal {
 
     // round1_simd
     template <typename T>
-    std::vector<T> round_simd(const std::vector<T>& A) {
+    std::vector<T> round1_simd(const std::vector<T>& A) {
         static_assert(std::is_same_v<T, float> || std::is_same_v<T, double>);
 
         if (A.empty())
@@ -164,6 +164,56 @@ namespace internal {
         for (; i < A.size(); ++i)
             result[i] = std::round(A[i]);
     
+        return result;
+    }
+
+
+    // ceil1_simd
+    template <typename T>
+    std::vector<T> ceil1_simd(const std::vector<T>& A) {
+        static_assert(std::is_same_v<T, float> || std::is_same_v<T, double>);
+
+        if (A.empty())
+            throw std::invalid_argument("Input vector can't be empty");
+
+        std::vector<T> result(A.size());
+        size_t i = 0;
+        const size_t simd_step = ceil_simd_traits<T>::step;
+
+        for (; i <= A.size() - simd_step; i += simd_step) {
+            auto vec_a = ceil_simd_traits<T>::load(&A[i]);
+            auto vec_result = ceil_simd_traits<T>::ceil(vec_a);
+            ceil_simd_traits<T>::store(&result[i], vec_result);
+        }
+
+        for (; i < A.size(); ++i)
+            result[i] = std::ceil(A[i]);
+
+        return result;
+    }
+
+
+    // floor1_simd
+    template <typename T>
+    std::vector<T> floor1_simd(const std::vector<T>& A) {
+        static_assert(std::is_same_v<T, float> || std::is_same_v<T, double>);
+
+        if (A.empty())
+            throw std::invalid_argument("Input vector can't be empty");
+
+        std::vector<T> result(A.size());
+        size_t i = 0;
+        const size_t simd_step = floor_simd_traits<T>::step;
+
+        for (; i <= A.size() - simd_step; i += simd_step) {
+            auto vec_a = floor_simd_traits<T>::load(&A[i]);
+            auto vec_result = floor_simd_traits<T>::floor(vec_a);
+            floor_simd_traits<T>::store(&result[i], vec_result);
+        }
+
+        for (; i < A.size(); ++i)
+            result[i] = std::floor(A[i]);
+
         return result;
     }
 }
