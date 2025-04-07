@@ -218,6 +218,29 @@ namespace internal {
     }
 
 
+    // abs1_simd
+    template <typename T>
+    std::vector<T> abs1_simd(const std::vector<T>& A) {
+        if (A.empty())
+            throw std::invalid_argument("Input vector can't be empty");
+
+        std::vector<T> result(A.size());
+        size_t i = 0;
+        const size_t simd_step = abs_simd_traits<T>::step;
+
+        for (; i <= A.size() - simd_step; i += simd_step) {
+            auto vec_a = abs_simd_traits<T>::load(&A[i]);
+            auto vec_result = abs_simd_traits<T>::abs(vec_a);
+            abs_simd_traits<T>::store(&result[i], vec_result);
+        }
+
+        for (; i < A.size(); ++i)
+            result[i] = std::abs(A[i]);
+
+        return result;
+    }
+
+
     // ================================= 2D ====================================
 
     // min2_simd
@@ -323,5 +346,19 @@ namespace internal {
             result.push_back(floor1_simd(row));
 
         return result;
+    }
+
+
+    // abs2_simd
+    template <typename T>
+    std::vector<std::vector<T>> abs2_simd(const std::vector<std::vector<T>>& A) {
+        if (A.empty())
+            throw std::invalid_argument("Input 2D vector can't be empty");
+
+        std::vector<std::vector<T>> result;
+        for (const auto& row : A)
+            result.push_back(abs1_simd(row));
+
+            return result;
     }
 }

@@ -55,4 +55,7 @@ struct ceil_simd_traits;
 template <typename T>
 struct floor_simd_traits;
 
+template <typename T>
+struct abs_simd_traits;
+
 #endif

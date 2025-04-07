@@ -47,6 +47,11 @@ namespace internal {
     std::vector<T> floor1_simd(const std::vector<T>& A);
 
 
+    // abs1
+    template <typename T>
+    std::vector<T> abs1_simd(const std::vector<T>& A);
+
+
     // ================================= 2D ====================================
 
     // min2
@@ -84,6 +89,11 @@ namespace internal {
     // floor2
     template <typename T>
     std::vector<std::vector<T>> floor2_simd(const std::vector<std::vector<T>>& A);
+
+
+    // abs2
+    template <typename T>
+    std::vector<std::vector<T>> abs2_simd(const std::vector<std::vector<T>>& A);
 }
 
 #endif

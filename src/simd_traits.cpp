@@ -1328,3 +1328,65 @@ struct floor_simd_traits<double> {
         return _mm256_floor_pd(a);
     }
 };
+
+
+// abs_simd
+template <typename T>
+struct abs_simd_traits;
+
+template <>
+struct abs_simd_traits<int8_t> {
+    using scalar_type = int8_t;
+    using simd_type = __m256i;
+    static constexpr size_t step = 32;
+
+    static simd_type load(const scalar_type *ptr) noexcept {
+        return _mm256_loadu_si256(reinterpret_cast<const __m256i *>(ptr));
+    }
+
+    static void store(scalar_type *ptr, simd_type val) noexcept {
+        _mm256_storeu_si256(reinterpret_cast<__m256i *>(ptr), val);
+    }
+
+    static simd_type abs(simd_type a) noexcept {
+        return _mm256_abs_epi8(a);
+    }
+};
+
+template <>
+struct abs_simd_traits<int16_t> {
+    using scalar_type = int16_t;
+    using simd_type = __m256i;
+    static constexpr size_t step = 16;
+
+    static simd_type load(const scalar_type *ptr) noexcept {
+        return _mm256_loadu_si256(reinterpret_cast<const __m256i *>(ptr));
+    }
+
+    static void store(scalar_type *ptr, simd_type val) noexcept {
+        _mm256_storeu_si256(reinterpret_cast<__m256i *>(ptr), val);
+    }
+
+    static simd_type abs(simd_type a) noexcept {
+        return _mm256_abs_epi16(a);
+    }
+};
+
+template <>
+struct abs_simd_traits<int32_t> {
+    using scalar_type = int32_t;
+    using simd_type = __m256i;
+    static constexpr size_t step = 8;
+
+    static simd_type load(const scalar_type *ptr) noexcept {
+        return _mm256_loadu_si256(reinterpret_cast<const __m256i *>(ptr));
+    }
+
+    static void store(scalar_type *ptr, simd_type val) noexcept {
+        _mm256_storeu_si256(reinterpret_cast<__m256i *>(ptr), val);
+    }
+
+    static simd_type abs(simd_type a) noexcept {
+        return _mm256_abs_epi32(a);
+    }
+};
