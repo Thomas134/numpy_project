@@ -28,4 +28,10 @@ struct slli_simd_traits;
 template <typename T>
 struct srli_simd_traits;
 
+template <typename T>
+struct sm4rnds4_simd_traits;
+
+template <typename T>
+struct sm4key4_simd_traits;
+
 #endif

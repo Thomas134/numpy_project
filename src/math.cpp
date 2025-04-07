@@ -30,7 +30,6 @@ namespace internal {
 
         result = Traits::horizontal_sum(sum);
 
-        // 处理剩余的元素
         for (; i < n; ++i) {
             result += ptr_A[i] * ptr_B[i];
         }
