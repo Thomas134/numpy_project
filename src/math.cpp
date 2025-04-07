@@ -16,6 +16,23 @@ std::vector<std::vector<T>> apply_unary_op(const std::vector<std::vector<T>>& A,
     return result;
 }
 
+template <typename T, typename BinaryOp>
+std::vector<std::vector<T>> apply_binary_op(const std::vector<std::vector<T>>& A, 
+                                            const std::vector<std::vector<T>>& B, 
+                                            BinaryOp op) {
+    if (A.empty() || B.empty())
+        throw std::invalid_argument("Input 2D vectors can't be empty");
+
+    if (A.size() != B.size())
+        throw std::invalid_argument("Input 2D vectors must have the same number of rows.");
+
+    std::vector<std::vector<T>> result;
+    for (size_t i = 0; i < A.size(); ++i) {
+        result.push_back(op(A[i], B[i]));
+    }
+    return result;
+}
+
 
 namespace internal {
     template <typename T>
@@ -260,35 +277,15 @@ namespace internal {
     template <typename T>
     std::vector<std::vector<T>> min2_simd(const std::vector<std::vector<T>>& A, 
                                           const std::vector<std::vector<T>>& B) {
-        if (A.empty() || B.empty())
-            throw std::invalid_argument("Input 2D vectors can't be empty");
-
-        if (A.size() != B.size())
-            throw std::invalid_argument("Input 2D vectors must have the same number of rows.");
-
-        std::vector<std::vector<T>> result;
-        for (size_t i = 0; i < A.size(); ++i)
-            result.push_back(min1_simd(A[i], B[i]));
-
-        return result;
+        return apply_binary_op(A, B, min1_simd);
     }
 
 
     // max2_simd
     template <typename T>
     std::vector<std::vector<T>> max2_simd(const std::vector<std::vector<T>>& A, 
-                                        const std::vector<std::vector<T>>& B) {
-        if (A.empty() || B.empty())
-            throw std::invalid_argument("Input 2D vectors can't be empty");
-
-        if (A.size() != B.size())
-            throw std::invalid_argument("Input 2D vectors must have the same number of rows");
-
-        std::vector<std::vector<T>> result;
-        for (size_t i = 0; i < A.size(); ++i)
-            result.push_back(max1_simd(A[i], B[i]));
-
-        return result;
+                                          const std::vector<std::vector<T>>& B) {
+        return apply_binary_op(A, B, max1_simd);
     }
 
 
