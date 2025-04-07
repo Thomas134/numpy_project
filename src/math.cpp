@@ -4,6 +4,19 @@
 #include <algorithm>
 
 
+template <typename T, typename UnaryOp>
+std::vector<std::vector<T>> apply_unary_op(const std::vector<std::vector<T>>& A, UnaryOp op) {
+    if (A.empty())
+        throw std::invalid_argument("Input 2D vector can't be empty");
+
+    std::vector<std::vector<T>> result;
+    for (const auto& row : A)
+        result.push_back(op(row));
+
+    return result;
+}
+
+
 namespace internal {
     template <typename T>
     typename inner_product_simd_traits<T>::accum_type inner_product_simd(const std::vector<T>& A, const std::vector<T>& B) {
@@ -282,83 +295,41 @@ namespace internal {
     // sqrt2_simd
     template <typename T>
     std::vector<std::vector<T>> sqrt2_simd(const std::vector<std::vector<T>>& A) {
-        if (A.empty())
-            throw std::invalid_argument("Input 2D vector can't be empty");
-
-        std::vector<std::vector<T>> result;
-        for (const auto& row : A)
-            result.push_back(sqrt1_simd(row));
-
-        return result;
+        return apply_unary_op(A, sqrt1_simd);
     }
 
 
     // rsqrt2_simd
     template <typename T>
     std::vector<std::vector<T>> rsqrt2_simd(const std::vector<std::vector<T>>& A) {
-        if (A.empty())
-            throw std::invalid_argument("Input 2D vector can't be empty");
-
-        std::vector<std::vector<T>> result;
-        for (const auto& row : A)
-            result.push_back(rsqrt1_simd(row));
-
-        return result;
+        return apply_unary_op(A, rsqrt1_simd);
     }
 
 
     // round2_simd
     template <typename T>
     std::vector<std::vector<T>> round2_simd(const std::vector<std::vector<T>>& A) {
-        if (A.empty())
-            throw std::invalid_argument("Input 2D vector can't be empty");
-
-        std::vector<std::vector<T>> result;
-        for (const auto& row : A)
-            result.push_back(round1_simd(row));
-
-        return result;
+        return apply_unary_op(A, round1_simd);
     }
 
 
     // ceil2_simd
     template <typename T>
     std::vector<std::vector<T>> ceil2_simd(const std::vector<std::vector<T>>& A) {
-        if (A.empty())
-            throw std::invalid_argument("Input 2D vector can't be empty");
-
-        std::vector<std::vector<T>> result;
-        for (const auto& row : A)
-            result.push_back(ceil1_simd(row));
-
-        return result;
+        return apply_unary_op(A, ceil1_simd);
     }
 
 
     // floor2_simd
     template <typename T>
     std::vector<std::vector<T>> floor2_simd(const std::vector<std::vector<T>>& A) {
-        if (A.empty())
-            throw std::invalid_argument("Input 2D vector can't be empty");
-
-        std::vector<std::vector<T>> result;
-        for (const auto& row : A)
-            result.push_back(floor1_simd(row));
-
-        return result;
+        return apply_unary_op(A, floor1_simd);
     }
 
 
     // abs2_simd
     template <typename T>
     std::vector<std::vector<T>> abs2_simd(const std::vector<std::vector<T>>& A) {
-        if (A.empty())
-            throw std::invalid_argument("Input 2D vector can't be empty");
-
-        std::vector<std::vector<T>> result;
-        for (const auto& row : A)
-            result.push_back(abs1_simd(row));
-
-            return result;
+        return apply_unary_op(A, abs1_simd);
     }
 }
