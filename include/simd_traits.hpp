@@ -34,4 +34,10 @@ struct sm4rnds4_simd_traits;
 template <typename T>
 struct sm4key4_simd_traits;
 
+template <typename T>
+struct min_simd_traits;
+
+template <typename T>
+struct max_simd_traits;
+
 #endif

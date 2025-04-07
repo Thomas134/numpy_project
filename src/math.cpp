@@ -1,6 +1,7 @@
 #include "../include/math.hpp"
 #include <immintrin.h>
 #include <stdexcept>
+#include <algorithm>
 
 
 namespace internal {
@@ -37,4 +38,57 @@ namespace internal {
         return result;
     }
 
+
+    // min1_simd
+    template <typename T>
+    std::vector<T> min1_simd(const std::vector<T>& A, const std::vector<T>& B) {
+        if (A.empty() || B.empty())
+            throw std::invalid_argument("Input vectors can't be empty");
+
+        if (A.size() != B.size())
+            throw std::invalid_argument("Input vectors must be of the same size.");
+
+        std::vector<T> result(A.size());
+        size_t i = 0;
+        const size_t simd_step = min_simd_traits<T>::step;
+
+        for (; i <= A.size() - simd_step; i += simd_step) {
+            auto vec_a = min_simd_traits<T>::load(&A[i]);
+            auto vec_b = min_simd_traits<T>::load(&B[i]);
+            auto vec_result = min_simd_traits<T>::min(vec_a, vec_b);
+            min_simd_traits<T>::store(&result[i], vec_result);
+        }
+
+        for (; i < A.size(); ++i)
+            result[i] = std::min(A[i], B[i]);
+
+        return result;
+    }
+
+
+    // max1_simd
+    template <typename T>
+    std::vector<T> max1_simd(const std::vector<T>& A, const std::vector<T>& B) {
+        if (A.empty() || B.empty())
+            throw std::invalid_argument("Input vectors can't be empty");
+
+        if (A.size() != B.size())
+            throw std::invalid_argument("Input vectors must be of the same size.");
+
+        std::vector<T> result(A.size());
+        size_t i = 0;
+        const size_t simd_step = max_simd_traits<T>::step;
+
+        for (; i <= A.size() - simd_step; i += simd_step) {
+            auto vec_a = max_simd_traits<T>::load(&A[i]);
+            auto vec_b = max_simd_traits<T>::load(&B[i]);
+            auto vec_result = max_simd_traits<T>::max(vec_a, vec_b);
+            max_simd_traits<T>::store(&result[i], vec_result);
+        }
+
+        for (; i < A.size(); ++i)
+            result[i] = std::max(A[i], B[i]);
+
+        return result;
+    }
 }
