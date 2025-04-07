@@ -25,4 +25,7 @@ struct testc_simd_traits;
 template <typename T>
 struct slli_simd_traits;
 
+template <typename T>
+struct srli_simd_traits;
+
 #endif

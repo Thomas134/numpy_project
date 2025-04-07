@@ -741,3 +741,28 @@ struct slli_simd_traits {
         return _mm256_slli_si256(a, imm8);
     }
 };
+
+
+// srli_simd
+template <typename T>
+struct srli_simd_traits;
+
+template <typename T>
+struct srli_simd_traits {
+    using scalar_type = T;
+    using simd_type = __m256i;
+    static constexpr size_t step = sizeof(__m256i) / sizeof(T);
+
+    static simd_type load(const scalar_type* ptr) noexcept {
+        return _mm256_loadu_si256(reinterpret_cast<const __m256i*>(ptr));
+    }
+
+    static void store(scalar_type* ptr, simd_type val) noexcept {
+        _mm256_storeu_si256(reinterpret_cast<__m256i*>(ptr), val);
+    }
+
+    static simd_type bitwise_srli(simd_type a, int imm8) noexcept {
+        return _mm256_srli_si256(a, imm8);
+    }
+};
+
