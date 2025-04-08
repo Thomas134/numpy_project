@@ -1,9 +1,7 @@
 #include "../include/math.hpp"
 #include "../include/utils.hpp"
 #include "../include/utils/simd_operators.hpp"
-#include <stdexcept>
 #include <type_traits>
-#include <algorithm>
 #include <cmath>
 
 
