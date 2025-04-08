@@ -1,5 +1,5 @@
 #include "../include/math.hpp"
-#include "../include/utils.hpp"
+#include "../include/utils/utils.hpp"
 #include "../include/utils/simd_operators.hpp"
 #include <type_traits>
 #include <cmath>
