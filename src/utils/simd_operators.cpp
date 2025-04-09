@@ -2,6 +2,17 @@
 #include "../../include/simd_traits.hpp"
 #include <stdexcept>
 
+
+template <typename T, typename Traits, typename UnaryOp>
+std::vector<T> apply_unary_op_plain(const std::vector<T>& A, UnaryOp unary_op) {
+    std::vector<T> result(A.size());
+    
+    for (size_t i = 0; i < A.size(); ++i)
+        result[i] = unary_op(A[i]);
+
+    return result;
+}
+
 template <typename T, typename Traits, typename UnaryOp>
 std::vector<T> apply_unary_op_simd(const std::vector<T>& A, UnaryOp unary_op) {
     if (A.empty())
@@ -21,6 +32,19 @@ std::vector<T> apply_unary_op_simd(const std::vector<T>& A, UnaryOp unary_op) {
         result[i] = unary_op(A[i]);
 
     return result;
+}
+
+
+template <typename T, typename Traits, typename BinaryOp>
+std::vector<std::vector<T>> apply_binary_op_plain(const std::vector<std::vector<T>>& A,
+                                                  const std::vector<std::vector<T>>& B,
+                                                  BinaryOp binary_op) {
+    std::vector<T> result(A.size());
+
+    for (size_t i = 0; i < A.size(); ++i)
+        result[i] = binary_op(A[i], B[i]);
+
+    return result[i];
 }
 
 
