@@ -16,7 +16,7 @@ namespace internal {
     std::vector<T> srli1_simd(const std::vector<T>& A, const int imm);
 
 
-    // ========================== 1D =============================
+    // ========================== 2D =============================
 
     // slli2
     template <typename T>
