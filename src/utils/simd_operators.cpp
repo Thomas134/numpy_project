@@ -3,7 +3,7 @@
 #include <stdexcept>
 
 
-template <typename T, typename Traits, typename UnaryOp>
+template <typename T, typename UnaryOp>
 std::vector<T> apply_unary_op_plain(const std::vector<T>& A, UnaryOp unary_op) {
     std::vector<T> result(A.size());
     
@@ -35,7 +35,7 @@ std::vector<T> apply_unary_op_simd(const std::vector<T>& A, UnaryOp unary_op) {
 }
 
 
-template <typename T, typename Traits, typename BinaryOp>
+template <typename T, typename BinaryOp>
 std::vector<std::vector<T>> apply_binary_op_plain(const std::vector<std::vector<T>>& A,
                                                   const std::vector<std::vector<T>>& B,
                                                   BinaryOp binary_op) {

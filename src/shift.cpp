@@ -11,14 +11,20 @@ namespace internal {
     // slli1_simd
     template <typename T>
     std::vector<T> slli1_simd(const std::vector<T>& A, const int imm8) {
-        return apply_unary_op_simd<T, slli_simd_traits<T>>(A, std::min);
+        if (A.size() < 32)
+            return apply_unary_op_plain(A, [imm8](const T& element) { return element << imm8; }); 
+
+        return apply_unary_op_simd<T, slli_simd_traits<T>>(A, [imm8](const T& element) { return element << imm8; });
     }
 
 
     // srli1_simd
     template <typename T>
     std::vector<T> srli1_simd(const std::vector<T>& A, const int imm8) {
-        return apply_unary_op_simd<T, srli_simd_traits<T>>(A, std::min);
+        if (A.size() < 32)
+            return apply_unary_op_plain(A, [imm8](const T& element) { return element >> imm8; });
+
+        return apply_unary_op_simd<T, srli_simd_traits<T>>(A, [imm8](const T& element) { return element >> imm8; });
     }
 
 
