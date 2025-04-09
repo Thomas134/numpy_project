@@ -5,6 +5,8 @@
 #include <immintrin.h>
 
 namespace internal {
+    // =========================== 1D ======================================
+
     // and1_simd
     template <typename T>
     std::vector<T> and1_simd(const std::vector<T>& A, const std::vector<T>& B) {
@@ -65,5 +67,35 @@ namespace internal {
             result &= !(~A[i] & B[i]);
 
         return result;
+    }
+
+
+    // =========================== 2D ======================================
+
+    // and2_simd
+    template <typename T>
+    std::vector<std::vector<T>> and2_simd(const std::vector<std::vector<T>>& A, const std::vector<std::vector<T>>& B) {
+        return apply_binary_op(A, B, and1_simd);
+    }
+
+
+    // or2_simd
+    template <typename T>
+    std::vector<std::vector<T>> or2_simd(const std::vector<std::vector<T>>& A, const std::vector<std::vector<T>>& B) {
+        return apply_binary_op(A, B, or1_simd);
+    }
+
+
+    // xor2_simd
+    template <typename T>
+    std::vector<std::vector<T>> xor2_simd(const std::vector<std::vector<T>>& A, const std::vector<std::vector<T>>& B) {
+        return apply_binary_op(A, B, xor1_simd);
+    }
+
+
+    // andnot2_simd
+    template <typename T>
+    std::vector<std::vector<T>> andnot2_simd(const std::vector<std::vector<T>>& A, const std::vector<std::vector<T>>& B) {
+        return apply_binary_op(A, B, andnot1_simd);
     }
 }
