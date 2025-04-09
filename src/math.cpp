@@ -44,7 +44,7 @@ namespace internal {
     template <typename T>
     std::vector<T> min1_simd(const std::vector<T>& A, const std::vector<T>& B) {
         if (A.size() < 32)
-            return apply_binary_op_plain<T, min_simd_traits<T>>(A, B, std::min);
+            return apply_binary_op_plain(A, B, std::min);
 
         return apply_binary_op_simd<T, min_simd_traits<T>>(A, B, std::min);        
     }
@@ -54,7 +54,7 @@ namespace internal {
     template <typename T>
     std::vector<T> max1_simd(const std::vector<T>& A, const std::vector<T>& B) {
         if (A.size() < 32)
-            return apply_binary_op_plain<T, max_simd_traits<T>>(A, B, std::max);
+            return apply_binary_op_plain(A, B, std::max);
 
         return apply_binary_op_simd<T, max_simd_traits<T>>(A, B, std::max);        
     }
@@ -66,7 +66,7 @@ namespace internal {
         static_assert(std::is_same_v<T, float> || std::is_same_v<T, double>);
 
         if (A.size() < 32)
-            return apply_unary_op_plain<T, sqrt_simd_traits<T>>(A, std::sqrt);
+            return apply_unary_op_plain(A, std::sqrt);
 
         return apply_unary_op_simd<T, sqrt_simd_traits<T>>(A, std::sqrt);
     }
@@ -78,7 +78,7 @@ namespace internal {
         static_assert(std::is_same_v<T, float>);
 
         if (A.size() < 32)
-            return apply_unary_op_plain<T, rsqrt_simd_traits<T>>(A, std::sqrt);
+            return apply_unary_op_plain(A, [](const T& element) { return 1 / std::sqrt(element); });
 
         return apply_unary_op_simd<T, rsqrt_simd_traits<T>>(A, std::sqrt);
     }
@@ -90,7 +90,7 @@ namespace internal {
         static_assert(std::is_same_v<T, float> || std::is_same_v<T, double>);
 
         if (A.size() < 32)
-            return apply_unary_op_plain<T, round_simd_traits<T>>(A, std::round);
+            return apply_unary_op_plain(A, std::round);
     
         return apply_unary_op_simd<T, round_simd_traits<T>>(A, std::round);
     }
@@ -102,7 +102,7 @@ namespace internal {
         static_assert(std::is_same_v<T, float> || std::is_same_v<T, double>);
 
         if (A.size() < 32)
-            return apply_unary_op_plain<T, ceil_simd_traits<T>>(A, std::ceil);
+            return apply_unary_op_plain(A, std::ceil);
 
         return apply_unary_op_simd<T, ceil_simd_traits<T>>(A, std::ceil);
     }
@@ -114,7 +114,7 @@ namespace internal {
         static_assert(std::is_same_v<T, float> || std::is_same_v<T, double>);
 
         if (A.size() < 32)
-            return apply_unary_op_plain<T, floor_simd_traits<T>>(A, std::floor);
+            return apply_unary_op_plain(A, std::floor);
 
         return apply_unary_op_simd<T, floor_simd_traits<T>>(A, std::floor);
     }
@@ -124,7 +124,7 @@ namespace internal {
     template <typename T>
     std::vector<T> abs1_simd(const std::vector<T>& A) {
         if (A.size() < 32)
-            return apply_unary_op_plain<T, abs_simd_traits<T>>(A, std::abs);
+            return apply_unary_op_plain(A, std::abs);
 
         return apply_unary_op_simd<T, abs_simd_traits<T>>(A, std::abs);
     }
