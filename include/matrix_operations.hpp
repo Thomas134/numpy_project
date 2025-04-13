@@ -6,13 +6,7 @@
 namespace internal {
     // dot
     template <typename T>
-    std::vector<std::vector<T>> dot(std::vector<std::vector<T>> A, std::vector<std::vector<T>> B);
-
-    template <>
-    std::vector<std::vector<float>> dot(std::vector<std::vector<float>> A, std::vector<std::vector<float>> B);
-
-    template <>
-    std::vector<std::vector<double>> dot(std::vector<std::vector<double>> A, std::vector<std::vector<double>> B);
+    std::vector<std::vector<T>> dot(const std::vector<std::vector<T>>& A, const std::vector<std::vector<T>>& B);
 
 
     // transpose
@@ -31,13 +25,7 @@ namespace internal {
 
     // add1
     template <typename T>
-    std::vector<T> add1(std::vector<T> A, std::vector<T> B);
-
-    template <>
-    std::vector<float> add1(std::vector<float> A, std::vector<float> B);
-
-    template <>
-    std::vector<double> add1(std::vector<double> A, std::vector<double> B);
+    std::vector<T> add1(const std::vector<T>& A, const std::vector<T>& B);
 
 
     // add2
@@ -53,25 +41,12 @@ namespace internal {
 
     // subtract1
     template <typename T>
-    std::vector<T> subtract1(std::vector<T> A, std::vector<T> B);
-
-    template <>
-    std::vector<float> subtract1(std::vector<float> A, std::vector<float> B);
-
-    template <>
-    std::vector<double> subtract1(std::vector<double> A, std::vector<double> B);
+    std::vector<T> subtract1(const std::vector<T>& A, const std::vector<T>& B);
 
 
     // subtract2
     template <typename T>
     std::vector<std::vector<T>> subtract2(std::vector<std::vector<T>> A, std::vector<std::vector<T>> B);
-
-    template <>
-    std::vector<std::vector<float>> subtract2(std::vector<std::vector<float>> A, std::vector<std::vector<float>> B);
-
-    template <>
-    std::vector<std::vector<double>> subtract2(std::vector<std::vector<double>> A, std::vector<std::vector<double>> B);
-
 }
 
 #endif

@@ -8,9 +8,8 @@
 namespace internal {
     // dot
     template <typename T>
-    std::vector<std::vector<T>> dot(std::vector<std::vector<T>> A, std::vector<std::vector<T>> B) {
-        static_assert(!std::is_same_v<T, char>);
-        static_assert(!std::is_same_v<T, std::string>);
+    std::vector<std::vector<T>> dot(const std::vector<std::vector<T>>& A, const std::vector<std::vector<T>>& B) {
+        static_assert(std::is_arithmetic_v<T>, "Type must be arithmetic");
 
         const size_t M = A.size();
         const size_t K_A = A[0].size();
@@ -21,156 +20,45 @@ namespace internal {
             throw std::invalid_argument("Matrix dimension mismatch");
         }
 
-        std::vector<std::vector<float>> float_A(M, std::vector<float>(K_A));
-        std::vector<std::vector<float>> float_B(K_B, std::vector<float>(N));
-
-        for (size_t i = 0; i < M; ++i)
-            for (size_t j = 0; j < K_A; ++j)
-                float_A[i][j] = static_cast<float>(A[i][j]);
-
-        for (size_t i = 0; i < K_B; ++i)
-            for (size_t j = 0; j < N; ++j)
-                float_B[i][j] = static_cast<float>(B[i][j]);
-
-        std::vector<float> flat_A, flat_B;
-        for (const auto& row : float_A) {
-            flat_A.insert(flat_A.end(), row.begin(), row.end());
-        }
-        for (const auto& row : float_B) {
-            flat_B.insert(flat_B.end(), row.begin(), row.end());
-        }
-
-        std::vector<float> flat_C(M * N);
-
-        cblas_sgemm(CblasRowMajor,  
-                    CblasNoTrans,  
-                    CblasNoTrans, 
-                    M, 
-                    N, 
-                    K_A, 
-                    1.0f,         
-                    flat_A.data(), 
-                    K_A,
-                    flat_B.data(), 
-                    N,
-                    0.0f,   
-                    flat_C.data(),
-                    N); 
-
-        std::vector<std::vector<float>> float_C;
-        float_C.reserve(M);
-        for (size_t i = 0; i < M; ++i) {
-            float_C.emplace_back(
-                flat_C.begin() + i * N,
-                flat_C.begin() + (i + 1) * N
-            );
-        }
-
         std::vector<std::vector<T>> C(M, std::vector<T>(N));
-        for (size_t i = 0; i < M; ++i) {
-            for (size_t j = 0; j < N; ++j) {
-                C[i][j] = static_cast<T>(float_C[i][j]);
+
+        auto performDotProduct = [M, K_A, N](const auto& matA, const auto& matB, auto& matC) {
+            using ElementType = std::decay_t<decltype(matA[0][0])>;
+            std::vector<ElementType> flat_A, flat_B;
+            for (const auto& row : matA) {
+                flat_A.insert(flat_A.end(), row.begin(), row.end());
             }
-        }
+            for (const auto& row : matB) {
+                flat_B.insert(flat_B.end(), row.begin(), row.end());
+            }
 
+            std::vector<ElementType> flat_C(M * N);
+
+            if constexpr (std::is_same_v<ElementType, float>) {
+                cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, M, N, K_A, 1.0f, flat_A.data(), K_A, flat_B.data(), N, 0.0f, flat_C.data(), N);
+            } else if constexpr (std::is_same_v<ElementType, double>) {
+                cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, M, N, K_A, 1.0, flat_A.data(), K_A, flat_B.data(), N, 0.0, flat_C.data(), N);
+            } else {
+                std::vector<float> float_flat_A(flat_A.begin(), flat_A.end());
+                std::vector<float> float_flat_B(flat_B.begin(), flat_B.end());
+                std::vector<float> float_flat_C(M * N);
+
+                cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, M, N, K_A, 1.0f, float_flat_A.data(), K_A, float_flat_B.data(), N, 0.0f, float_flat_C.data(), N);
+
+                for (size_t i = 0; i < M * N; ++i) {
+                    flat_C[i] = static_cast<ElementType>(float_flat_C[i]);
+                }
+            }
+
+            matC.reserve(M);
+            for (size_t i = 0; i < M; ++i) {
+                matC[i].assign(flat_C.begin() + i * N, flat_C.begin() + (i + 1) * N);
+            }
+        };
+
+        performDotProduct(A, B, C);
         return C;
-    }
-
-    template <>
-    std::vector<std::vector<float>> dot(std::vector<std::vector<float>> A, 
-                                        std::vector<std::vector<float>> B) {
-        const size_t M = A.size();   
-        const size_t K_A = A[0].size(); 
-        const size_t K_B = B.size();    
-        const size_t N = B[0].size(); 
-        
-        if (K_A != K_B) {
-            throw std::invalid_argument("Matrix dimension mismatch");
-        }
-
-        std::vector<float> flat_A, flat_B;
-        for (const auto& row : A) {
-            flat_A.insert(flat_A.end(), row.begin(), row.end());
-        }
-        for (const auto& row : B) {
-            flat_B.insert(flat_B.end(), row.begin(), row.end());
-        }
-
-        std::vector<float> flat_C(M * N);
-
-        cblas_sgemm(CblasRowMajor,  
-                    CblasNoTrans,  
-                    CblasNoTrans,  
-                    M,           
-                    N,             
-                    K_A,           
-                    1.0f,          
-                    flat_A.data(),  
-                    K_A,            
-                    flat_B.data(),  
-                    N,             
-                    0.0f,         
-                    flat_C.data(), 
-                    N);           
-
-        std::vector<std::vector<float>> C;
-        C.reserve(M);
-        for (size_t i = 0; i < M; ++i) {
-            C.emplace_back(
-                flat_C.begin() + i * N,
-                flat_C.begin() + (i + 1) * N
-            );
-        }
-        return C;
-    }
-
-    template <>
-    std::vector<std::vector<double>> dot(std::vector<std::vector<double>> A, 
-                                        std::vector<std::vector<double>> B) {
-        const size_t M = A.size();   
-        const size_t K_A = A[0].size(); 
-        const size_t K_B = B.size();    
-        const size_t N = B[0].size(); 
-        
-        if (K_A != K_B) {
-            throw std::invalid_argument("Matrix dimension mismatch");
-        }
-
-        std::vector<double> flat_A, flat_B;
-        for (const auto& row : A) {
-            flat_A.insert(flat_A.end(), row.begin(), row.end());
-        }
-        for (const auto& row : B) {
-            flat_B.insert(flat_B.end(), row.begin(), row.end());
-        }
-
-        std::vector<double> flat_C(M * N);
-
-        cblas_dgemm(CblasRowMajor, 
-                    CblasNoTrans,  
-                    CblasNoTrans, 
-                    M,            
-                    N,           
-                    K_A,          
-                    1.0,           
-                    flat_A.data(),  
-                    K_A,            
-                    flat_B.data(),  
-                    N,              
-                    0.0,          
-                    flat_C.data(), 
-                    N);         
-
-        std::vector<std::vector<double>> C;
-        C.reserve(M);
-        for (size_t i = 0; i < M; ++i) {
-            C.emplace_back(
-                flat_C.begin() + i * N,
-                flat_C.begin() + (i + 1) * N
-            );
-        }
-        return C;
-    }
+    }    
 
 
     // transpose
@@ -319,61 +207,34 @@ namespace internal {
 
     // add1
     template <typename T>
-    std::vector<T> add1(std::vector<T> A, std::vector<T> B) {
-        static_assert(!std::is_same_v<T, std::string>);
-        static_assert(!std::is_same_v<T, char>);
+    std::vector<T> add1(const std::vector<T>& A, const std::vector<T>& B) {
+        static_assert(std::is_arithmetic_v<T>, "Type must be arithmetic");
+
+        if (A.size() != B.size()) {
+            throw std::invalid_argument("Vector dimension mismatch");
+        }
 
         size_t N = A.size();
-
-        if (N != B.size()) 
-            throw std::invalid_argument("Vector dimension mismatch");
-
-        std::vector<float> float_C(N);
-        std::vector<float> float_A(N), float_B(N);
-
-        for (size_t i = 0; i < N; ++i)
-            float_A[i] = static_cast<float>(A[i]);
-
-        for (size_t i = 0; i < N; ++i)
-            float_B[i] = static_cast<float>(B[i]);
-
-        cblas_scopy(N, float_B.data(), 1, float_C.data(), 1);
-        cblas_saxpy(N, 1.0, float_A.data(), 1, float_C.data(), 1);
-
         std::vector<T> C(N);
 
-        for (size_t i = 0; i < N; ++i)
-            C[i] = static_cast<T>(float_C[i]);
-
-        return C;
-    }
-
-    template <>
-    std::vector<float> add1(std::vector<float> A, std::vector<float> B) {
-        size_t N = A.size();
-
-        if (N != B.size()) 
-            throw std::invalid_argument("Vector dimension mismatch");
-
-        std::vector<float> C(N);
-
-        cblas_scopy(N, B.data(), 1, C.data(), 1);
-        cblas_saxpy(N, 1.0, A.data(), 1, C.data(), 1);
-
-        return C;
-    }
-
-    template <>
-    std::vector<double> add1(std::vector<double> A, std::vector<double> B) {
-        size_t N = A.size();
-
-        if (N != B.size()) 
-            throw std::invalid_argument("Vector dimension mismatch");
-
-        std::vector<double> C(N);
-
-        cblas_dcopy(N, B.data(), 1, C.data(), 1);
-        cblas_daxpy(N, 1.0, A.data(), 1, C.data(), 1);
+        if constexpr (std::is_same_v<T, float>) {
+            cblas_scopy(N, B.data(), 1, C.data(), 1);
+            cblas_saxpy(N, 1.0, A.data(), 1, C.data(), 1);
+        } else if constexpr (std::is_same_v<T, double>) {
+            cblas_dcopy(N, B.data(), 1, C.data(), 1);
+            cblas_daxpy(N, 1.0, A.data(), 1, C.data(), 1);
+        } else {
+            std::vector<float> float_A(N), float_B(N), float_C(N);
+            for (size_t i = 0; i < N; ++i) {
+                float_A[i] = static_cast<float>(A[i]);
+                float_B[i] = static_cast<float>(B[i]);
+            }
+            cblas_scopy(N, float_B.data(), 1, float_C.data(), 1);
+            cblas_saxpy(N, 1.0, float_A.data(), 1, float_C.data(), 1);
+            for (size_t i = 0; i < N; ++i) {
+                C[i] = static_cast<T>(float_C[i]);
+            }
+        }
 
         return C;
     }
@@ -511,62 +372,34 @@ namespace internal {
 
     // subtract1
     template <typename T>
-    std::vector<T> subtract1(std::vector<T> A, std::vector<T> B) {
-        static_assert(!std::is_same_v<T, char>);
-        static_assert(!std::is_same_v<T, std::string>);
+    std::vector<T> subtract1(const std::vector<T>& A, std::vector<T>& B) {
+        static_assert(std::is_arithmetic_v<T>, "Type must be arithmetic");
+
+        if (A.size() != B.size()) {
+            throw std::invalid_argument("Vector dimension mismatch");
+        }
 
         size_t N = A.size();
-        
-        if (N != B.size()) 
-            throw std::invalid_argument("Vector dimension mismatch");
-
-        std::vector<float> float_A(N), float_B(N);
-
-        for (size_t i = 0; i < N; ++i)
-            float_A[i] = static_cast<float>(A[i]);
-
-        for (size_t i = 0; i < N; ++i)
-            float_B[i] = static_cast<float>(B[i]);
-
-        std::vector<float> float_C(N);
-
-        cblas_scopy(N, float_A.data(), 1, float_C.data(), 1);
-        cblas_saxpy(N, -1.0, float_B.data(), 1, float_C.data(), 1);
-
         std::vector<T> C(N);
 
-        for (size_t i = 0; i < N; ++i)
-            C[i] = static_cast<T>(float_C[i]);
-
-        return C;
-    }
-
-    template <>
-    std::vector<float> subtract1(std::vector<float> A, std::vector<float> B) {
-        size_t N = A.size();
-
-        if (N != B.size()) 
-            throw std::invalid_argument("Vector dimension mismatch");
-
-        std::vector<float> C(N);
-
-        cblas_scopy(N, A.data(), 1, C.data(), 1);
-        cblas_saxpy(N, -1.0, B.data(), 1, C.data(), 1);
-
-        return C;
-    }
-
-    template <>
-    std::vector<double> subtract1(std::vector<double> A, std::vector<double> B) {
-        size_t N = A.size();
-
-        if (N != B.size()) 
-            throw std::invalid_argument("Vector dimension mismatch");
-
-        std::vector<double> C(N);
-
-        cblas_dcopy(N, A.data(), 1, C.data(), 1);
-        cblas_daxpy(N, -1.0, B.data(), 1, C.data(), 1);
+        if constexpr (std::is_same_v<T, float>) {
+            cblas_scopy(N, A.data(), 1, C.data(), 1);
+            cblas_saxpy(N, -1.0, B.data(), 1, C.data(), 1);
+        } else if constexpr (std::is_same_v<T, double>) {
+            cblas_dcopy(N, A.data(), 1, C.data(), 1);
+            cblas_daxpy(N, -1.0, B.data(), 1, C.data(), 1);
+        } else {
+            std::vector<float> float_A(N), float_B(N), float_C(N);
+            for (size_t i = 0; i < N; ++i) {
+                float_A[i] = static_cast<float>(A[i]);
+                float_B[i] = static_cast<float>(B[i]);
+            }
+            cblas_scopy(N, float_A.data(), 1, float_C.data(), 1);
+            cblas_saxpy(N, -1.0, float_B.data(), 1, float_C.data(), 1);
+            for (size_t i = 0; i < N; ++i) {
+                C[i] = static_cast<T>(float_C[i]);
+            }
+        }
 
         return C;
     }
