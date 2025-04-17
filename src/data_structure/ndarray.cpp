@@ -136,22 +136,6 @@ std::vector<uint8_t> ndarray<T>::all(int axis) const {
     return res;
 }
 
-template <typename T>
-std::vector<T> ndarray<T>::round(int axis) const {
-    if (axis < 0 || axis > 1)
-    throw std::invalid_argument("Axis should be 0 or 1");
-    
-    if (dtype() == "string")
-        throw std::invalid_argument("String element cannot be rounded");
-
-    std::vector<T> round_vec;
-
-    for (auto& element : __data)
-        round_vec.push_back(std::round(data));
-
-    return round_vec;
-}
-
 
 template <typename T>
 T& ndarray<T>::operator()(const std::vector<size_t>& indices) {

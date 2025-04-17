@@ -37,8 +37,6 @@ public:
 public:
     std::vector<uint8_t> all(int axis) const;
 
-    std::vector<T> round(int axis) const;
-
     float mean() const;
 
     double mean() const;
@@ -57,41 +55,41 @@ public:
 
 
     // math function
-    ndarray<T> min(const ndarray<T>& other);
+    ndarray<T> min();
 
-    ndarray<T> max(const ndarray<T>& other);
+    ndarray<T> max();
 
-    ndarray<T> sqrt(const ndarray<T>& other);
+    ndarray<T> sqrt();
 
-    ndarray<T> rsqrt(const ndarray<T>& other);
+    ndarray<T> rsqrt();
 
-    ndarray<T> round(const ndarray<T>& other);
+    ndarray<T> round();
 
-    ndarray<T> ceil(const ndarray<T>& other);
+    ndarray<T> ceil();
 
-    ndarray<T> floor(const ndarray<T>& other);
+    ndarray<T> floor();
 
-    ndarray<T> abs(const ndarray<T>& other);
+    ndarray<T> abs();
 
-    ndarray<T> log(const ndarray<T>& other);
+    ndarray<T> log();
 
-    ndarray<T> log2(const ndarray<T>& other);
+    ndarray<T> log2();
 
-    ndarray<T> log10(const ndarray<T>& other);
+    ndarray<T> log10();
 
-    ndarray<T> sin(const ndarray<T>& other);
+    ndarray<T> sin();
 
-    ndarray<T> cos(const ndarray<T>& other);
+    ndarray<T> cos();
 
-    ndarray<T> sincos(const ndarray<T>& other);
+    ndarray<T> sincos();
 
-    ndarray<T> tan(const ndarray<T>& other);
+    ndarray<T> tan();
 
-    ndarray<T> asin(const ndarray<T>& other);
+    ndarray<T> asin();
 
-    ndarray<T> acos(const ndarray<T>& other);
+    ndarray<T> acos();
 
-    ndarray<T> atan(const ndarray<T>& other);
+    ndarray<T> atan();
 
 
     // parallel function
