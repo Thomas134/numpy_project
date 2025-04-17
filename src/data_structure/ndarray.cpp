@@ -211,6 +211,128 @@ NDARRAY_CRYPTO_FUNC(sm4rnds4, sm4rnds4_1_simd);
 
 NDARRAY_CRYPTO_FUNC(sm4key4, sm4key4_1_simd);
 
+
+// matrix operations
+template <typename T>
+ndarray<T> ndarray<T>::dot(const ndarray<T>& other) {
+    if (__shape.size() != 2 || other.__shape.size() != 2)
+        throw std::invalid_argument("Only 2D arrays are supported for dot operation.");
+    
+    const size_t M = __shape[0];
+    const size_t K_A = __shape[1];
+    const size_t K_B = other.__shape[0];
+    const size_t N = other.__shape[1];
+
+    if (K_A != K_B) {
+        throw std::invalid_argument("Matrix dimension mismatch");
+    }
+
+    std::vector<std::vector<T>> result_2d = internal::dot(__data, other.__data);
+
+    std::vector<size_t> result_shape = {M, N};
+    ndarray<T> result_ndarray(result_shape);
+
+    for (size_t i = 0; i < M; ++i)
+        for (size_t j = 0; j < N; ++j)
+            result_ndarray.__data[result_ndarray.calculate_offset(i, j)] = result_2d[i][j];
+    
+    return result_ndarray;
+}
+
+template <typename T>
+ndarray<T> ndarray<T>::add(const ndarray<T>& other) {
+    if (__shape != other.__shape)
+        throw std::invalid_argument("Shapes of the two ndarrays do not match.");
+
+    if (__shape.size() == 1) {
+        std::vector<T> result = internal::add1(__data, other.__data);
+        ndarray<T> result_ndarray(__shape);
+        for (size_t i = 0; i < result.size(); ++i)
+            result_ndarray.__data[i] = result[i];
+
+        return result_ndarray;
+    } else if (__shape.size() == 2) {
+        std::vector<std::vector<T>> A_2d(__shape[0], std::vector<T>(__shape[1]));
+        std::vector<std::vector<T>> B_2d(__shape[0], std::vector<T>(__shape[1]));
+
+        for (size_t i = 0; i < __shape[0]; ++i) {
+            for (size_t j = 0; j < __shape[1]; ++j) {
+                A_2d[i][j] = __data[calculate_offset(i, j)];
+                B_2d[i][j] = other.__data[other.calculate_offset(i, j)];
+            }
+        }
+
+        std::vector<std::vector<T>> result_2d = internal::add2(A_2d, B_2d);
+        ndarray<T> result_ndarray(__shape);
+
+        for (size_t i = 0; i < __shape[0]; ++i)
+            for (size_t j = 0; j < __shape[1]; ++j)
+                result_ndarray.__data[result_ndarray.calculate_offset(i, j)] = result_2d[i][j];
+
+            return result_ndarray;
+    }
+
+    throw std::invalid_argument("Unsupported array dimension.");
+}
+
+template <typename T>
+ndarray<T> ndarray<T>::sub(const ndarray<T>& other) {
+    if (__shape != other.__shape)
+        throw std::invalid_argument("Shapes of the two ndarrays do not match.");
+
+    if (__shape.size() == 1) {
+        std::vector<T> result = internal::subtract1(__data, other.__data);
+        ndarray<T> result_ndarray(__shape);
+        for (size_t i = 0; i < result.size(); ++i)
+            result_ndarray.__data[i] = result[i];
+
+        return result_ndarray;
+    } else if (__shape.size() == 2) {
+        std::vector<std::vector<T>> A_2d(__shape[0], std::vector<T>(__shape[1]));
+        std::vector<std::vector<T>> B_2d(__shape[0], std::vector<T>(__shape[1]));
+
+        for (size_t i = 0; i < __shape[0]; ++i) {
+            for (size_t j = 0; j < __shape[1]; ++j) {
+                A_2d[i][j] = __data[calculate_offset(i, j)];
+                B_2d[i][j] = other.__data[other.calculate_offset(i, j)];
+            }
+        }
+
+        std::vector<std::vector<T>> result_2d = internal::subtract2(A_2d, B_2d);
+        ndarray<T> result_ndarray(__shape);
+
+        for (size_t i = 0; i < __shape[0]; ++i)
+            for (size_t j = 0; j < __shape[1]; ++j)
+                result_ndarray.__data[result_ndarray.calculate_offset(i, j)] = result_2d[i][j];
+
+            return result_ndarray;
+    }
+
+    throw std::invalid_argument("Unsupported array dimension.");
+}
+
+template <typename T>
+ndarray<T> ndarray<T>::transpose() {
+    if (__shape.size() != 2)
+        throw std::invalid_argument("Only 2D arrays can be transposed.");
+
+    std::vector<std::vector<T>> mat_2d(__shape[0], std::vector<T>(__shape[1]));
+    
+    for (size_t i = 0; i < __shape[0]; ++i)
+        for (size_t j = 0; j < __shape[1]; ++j)
+            mat_2d[i][j] = __data[calculate_offset(i, j)];
+
+    std::vector<std::vector<T>> result_2d = internal::transpose(mat_2d);
+    std::vector<size_t> result_shape = {__shape[1], __shape[0]};
+    ndarray<T> result_ndarray(result_shape);
+    
+    for (size_t i = 0; i < result_shape[0]; ++i)
+        for (size_t j = 0; j < result_shape[1]; ++j)
+            result_ndarray.__data[result_ndarray.calculate_offset(i, j)] = result_2d[i][j];
+
+    return result_ndarray;
+}
+
 template <typename T>
 T& ndarray<T>::operator()(const std::vector<size_t>& indices) {
     if (indices.size() != __shape.size())

@@ -183,7 +183,6 @@ private:
     size_t calculate_offset(size_t row, size_t col) const noexcept;
 
 public:
-    // ¹¹Ôìº¯Êý
     ndarray(const std::vector<size_t>& shape);
 
     const char *dtype() const noexcept;
@@ -275,6 +274,16 @@ public:
     ndarray<T> sm4rnds4(const ndarray<T>& other);
 
     ndarray<T> sm4key4(const ndarray<T>& other);
+
+
+    // matrix operations
+    ndarray<T> add(const ndarray<T>& other);
+
+    ndarray<T> sub(const ndarray<T>& other);
+
+    ndarray<T> dot(const ndarray<T>& other);
+
+    ndarray<T> transpose();
     
 
     // access element
