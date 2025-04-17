@@ -4,6 +4,13 @@
 #include "../../include/data_structure/ndarray.hpp"
 #include "../../include/data_structure/dtype_trait.hpp"
 
+#include "../../include/logical.hpp"
+#include "../../include/math.hpp"
+#include "../../include/parallel_for.hpp"
+#include "../../include/shift.hpp"
+#include "../../include/sort.hpp"
+#include "../../include/crypto.hpp"
+
 template <typename T>
 uint8_t bool_operation_with_row(const std::vector<T>& vec) {
     for (int i = 0; i < static_cast<int>(vec.size()); ++i)
@@ -134,6 +141,144 @@ std::vector<uint8_t> ndarray<T>::all(int axis) const {
     }
 
     return res;
+}
+
+
+// logical functions
+template<typename T>
+ndarray<T> ndarray<T>::logical_and(const ndarray<T>& other) {
+    if (__shape != other.__shape)
+        throw std::invalid_argument("Shapes of the two ndarrays do not match.");
+
+        if (__shape.size() == 1) {
+            std::vector<T> result = and1_simd(__data, other.__data);
+            ndarray<T> result_ndarray(__shape);
+            for (size_t i = 0; i < result.size(); ++i) {
+                result_ndarray.__data[i] = result[i];
+        }
+            return result_ndarray;
+    } else if (__shape.size() == 2) {
+            std::vector<std::vector<T>> A_2d(__shape[0], std::vector<T>(__shape[1]));
+            std::vector<std::vector<T>> B_2d(__shape[0], std::vector<T>(__shape[1]));
+            for (size_t i = 0; i < __shape[0]; ++i) {
+                for (size_t j = 0; j < __shape[1]; ++j) {
+                    A_2d[i][j] = __data[calculate_offset(i, j)];
+                    B_2d[i][j] = other.__data[other.calculate_offset(i, j)];
+                }
+            }
+            std::vector<std::vector<T>> result_2d = and2_simd(A_2d, B_2d);
+            ndarray<T> result_ndarray(__shape);
+            for (size_t i = 0; i < __shape[0]; ++i) {
+                for (size_t j = 0; j < __shape[1]; ++j) {
+                    result_ndarray.__data[calculate_offset(i, j)] = result_2d[i][j];
+                }
+            }
+            return result_ndarray;
+    }
+
+    throw std::invalid_argument("Unsupported array dimension.");
+}
+
+template<typename T>
+ndarray<T> ndarray<T>::logical_or(const ndarray<T>& other) {
+    if (__shape != other.__shape)
+        throw std::invalid_argument("Shapes of the two ndarrays do not match.");
+
+        if (__shape.size() == 1) {
+            std::vector<T> result = or1_simd(__data, other.__data);
+            ndarray<T> result_ndarray(__shape);
+            for (size_t i = 0; i < result.size(); ++i) {
+                result_ndarray.__data[i] = result[i];
+        }
+            return result_ndarray;
+    } else if (__shape.size() == 2) {
+            std::vector<std::vector<T>> A_2d(__shape[0], std::vector<T>(__shape[1]));
+            std::vector<std::vector<T>> B_2d(__shape[0], std::vector<T>(__shape[1]));
+            for (size_t i = 0; i < __shape[0]; ++i) {
+                for (size_t j = 0; j < __shape[1]; ++j) {
+                    A_2d[i][j] = __data[calculate_offset(i, j)];
+                    B_2d[i][j] = other.__data[other.calculate_offset(i, j)];
+                }
+            }
+            std::vector<std::vector<T>> result_2d = or2_simd(A_2d, B_2d);
+            ndarray<T> result_ndarray(__shape);
+            for (size_t i = 0; i < __shape[0]; ++i) {
+                for (size_t j = 0; j < __shape[1]; ++j) {
+                    result_ndarray.__data[calculate_offset(i, j)] = result_2d[i][j];
+                }
+            }
+            return result_ndarray;
+    }
+    
+    throw std::invalid_argument("Unsupported array dimension.");
+}
+
+template<typename T>
+ndarray<T> ndarray<T>::logical_xor(const ndarray<T>& other) {
+    if (__shape != other.__shape)
+        throw std::invalid_argument("Shapes of the two ndarrays do not match.");
+
+        if (__shape.size() == 1) {
+            std::vector<T> result = xor1_simd(__data, other.__data);
+            ndarray<T> result_ndarray(__shape);
+            for (size_t i = 0; i < result.size(); ++i) {
+                result_ndarray.__data[i] = result[i];
+        }
+            return result_ndarray;
+    } else if (__shape.size() == 2) {
+            std::vector<std::vector<T>> A_2d(__shape[0], std::vector<T>(__shape[1]));
+            std::vector<std::vector<T>> B_2d(__shape[0], std::vector<T>(__shape[1]));
+            for (size_t i = 0; i < __shape[0]; ++i) {
+                for (size_t j = 0; j < __shape[1]; ++j) {
+                    A_2d[i][j] = __data[calculate_offset(i, j)];
+                    B_2d[i][j] = other.__data[other.calculate_offset(i, j)];
+                }
+            }
+            std::vector<std::vector<T>> result_2d = xor2_simd(A_2d, B_2d);
+            ndarray<T> result_ndarray(__shape);
+            for (size_t i = 0; i < __shape[0]; ++i) {
+                for (size_t j = 0; j < __shape[1]; ++j) {
+                    result_ndarray.__data[calculate_offset(i, j)] = result_2d[i][j];
+                }
+            }
+            return result_ndarray;
+    }
+    
+    throw std::invalid_argument("Unsupported array dimension.");
+}
+
+template<typename T>
+ndarray<T> ndarray<T>::logical_andnot(const ndarray<T>& other) {
+    if (__shape != other.__shape)
+        throw std::invalid_argument("Shapes of the two ndarrays do not match.");
+
+        if (__shape.size() == 1) {
+            std::vector<T> result = andnot1_simd(__data, other.__data);
+            ndarray<T> result_ndarray(__shape);
+            for (size_t i = 0; i < result.size(); ++i) {
+                result_ndarray.__data[i] = result[i];
+        }
+            return result_ndarray;
+    } else if (__shape.size() == 2) {
+            std::vector<std::vector<T>> A_2d(__shape[0], std::vector<T>(__shape[1]));
+            std::vector<std::vector<T>> B_2d(__shape[0], std::vector<T>(__shape[1]));
+            for (size_t i = 0; i < __shape[0]; ++i) {
+                for (size_t j = 0; j < __shape[1]; ++j) {
+                    A_2d[i][j] = __data[calculate_offset(i, j)];
+                    B_2d[i][j] = other.__data[other.calculate_offset(i, j)];
+                }
+            }
+            std::vector<std::vector<T>> result_2d = andnot2_simd(A_2d, B_2d);
+            ndarray<T> result_ndarray(__shape);
+            for (size_t i = 0; i < __shape[0]; ++i) {
+                for (size_t j = 0; j < __shape[1]; ++j) {
+                    result_ndarray.__data[calculate_offset(i, j)] = result_2d[i][j];
+                }
+            }
+            return result_ndarray;
+    }
+    
+    throw std::invalid_argument("Unsupported array dimension.");
 }
 
 
