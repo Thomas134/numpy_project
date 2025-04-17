@@ -151,3 +151,30 @@ std::vector<T> ndarray<T>::round(int axis) const {
 
     return round_vec;
 }
+
+
+template <typename T>
+T& ndarray<T>::operator()(const std::vector<size_t>& indices) {
+    if (indices.size() != __shape.size())
+        throw std::out_of_range("Index dimensions do not match array dimensions.");
+
+    if (__shape.size() == 1) 
+        return __data[indices[0]];
+    else if (__shape.size() == 2)
+        return __data[calculate_offset(indices[0], indices[1])];
+    
+    throw std::out_of_range("Invalid index.");
+}
+
+template <typename T>
+const T& ndarray<T>::operator()(const std::vector<size_t>& indices) const {
+    if (indices.size() != __shape.size())
+        throw std::out_of_range("Index dimensions do not match array dimensions.");
+
+    if (__shape.size() == 1)
+        return __data[indices[0]];
+    else if (__shape.size() == 2)
+        return __data[calculate_offset(indices[0], indices[1])];
+
+    throw std::out_of_range("Invalid index.");
+}
