@@ -6,6 +6,169 @@
 #include <array>
 #include <cstdint>
 
+#define NDARRAY_UNARY_FUNC(func_name, simd_func_1d, simd_func_2d) \
+template <typename T> \
+ndarray<T> ndarray<T>::func_name() { \
+    if (__shape.size() == 1) { \
+        std::vector<T> result = simd_func_1d(__data); \
+        ndarray<T> result_ndarray(__shape); \
+        for (size_t i = 0; i < result.size(); ++i) \
+            result_ndarray.__data[i] = result[i]; \
+        return result_ndarray; \
+    } else if (__shape.size() == 2) { \
+        std::vector<std::vector<T>> A_2d(__shape[0], std::vector<T>(__shape[1])); \
+        for (size_t i = 0; i < __shape[0]; ++i) \
+            for (size_t j = 0; j < __shape[1]; ++j) \
+                A_2d[i][j] = __data[calculate_offset(i, j)]; \
+        std::vector<std::vector<T>> result_2d = simd_func_2d(A_2d); \
+        ndarray<T> result_ndarray(__shape); \
+        for (size_t i = 0; i < __shape[0]; ++i) \
+            for (size_t j = 0; j < __shape[1]; ++j) \
+                result_ndarray.__data[calculate_offset(i, j)] = result_2d[i][j]; \
+        return result_ndarray; \
+    } \
+    throw std::invalid_argument("Unsupported array dimension."); \
+}
+
+#define NDARRAY_BINARY_FUNC(func_name, simd_1d_func, simd_2d_func) \
+template <typename T> \
+ndarray<T> ndarray<T>::func_name(const ndarray<T>& other) { \
+    if (__shape != other.__shape) \
+        throw std::invalid_argument("Shapes of the two ndarrays do not match."); \
+    if (__shape.size() == 1) { \
+        std::vector<T> result = simd_1d_func(__data, other.__data); \
+        ndarray<T> result_ndarray(__shape); \
+        for (size_t i = 0; i < result.size(); ++i) \
+            result_ndarray.__data[i] = result[i]; \
+        return result_ndarray; \
+    } else if (__shape.size() == 2) { \
+        std::vector<std::vector<T>> A_2d(__shape[0], std::vector<T>(__shape[1])); \
+        std::vector<std::vector<T>> B_2d(__shape[0], std::vector<T>(__shape[1])); \
+        for (size_t i = 0; i < __shape[0]; ++i) { \
+            for (size_t j = 0; j < __shape[1]; ++j) { \
+                A_2d[i][j] = __data[calculate_offset(i, j)]; \
+                B_2d[i][j] = other.__data[other.calculate_offset(i, j)]; \
+            } \
+        } \
+        std::vector<std::vector<T>> result_2d = simd_2d_func(A_2d, B_2d); \
+        ndarray<T> result_ndarray(__shape); \
+        for (size_t i = 0; i < __shape[0]; ++i) { \
+            for (size_t j = 0; j < __shape[1]; ++j) { \
+                result_ndarray.__data[calculate_offset(i, j)] = result_2d[i][j]; \
+            } \
+        } \
+        return result_ndarray; \
+    } \
+    throw std::invalid_argument("Unsupported array dimension."); \
+}
+
+#define NDARRAY_APPLY_FUNC(func_name, apply_1d, apply_2d) \
+template <typename T> \
+template <typename Func> \
+ndarray<T> ndarray<T>::func_name(Func func) { \
+    if (__shape.size() == 1) { \
+        std::vector<T> result = __data; \
+        apply_1d(result, func); \
+        ndarray<T> result_ndarray(__shape); \
+        for (size_t i = 0; i < result.size(); ++i) { \
+            result_ndarray.__data[i] = result[i]; \
+        } \
+        return result_ndarray; \
+    } else if (__shape.size() == 2) { \
+        std::vector<std::vector<T>> A_2d(__shape[0], std::vector<T>(__shape[1])); \
+        for (size_t i = 0; i < __shape[0]; ++i) { \
+            for (size_t j = 0; j < __shape[1]; ++j) { \
+                A_2d[i][j] = __data[calculate_offset(i, j)]; \
+            } \
+        } \
+        apply_2d(A_2d, func); \
+        ndarray<T> result_ndarray(__shape); \
+        for (size_t i = 0; i < __shape[0]; ++i) { \
+            for (size_t j = 0; j < __shape[1]; ++j) { \
+                result_ndarray.__data[calculate_offset(i, j)] = A_2d[i][j]; \
+            } \
+        } \
+        return result_ndarray; \
+    } \
+    throw std::invalid_argument("Unsupported array dimension."); \
+}
+
+#define NDARRAY_SHIFT_FUNC(func_name, simd_func_1d, simd_func_2d) \
+template<typename T> \
+ndarray<T> ndarray<T>::func_name(const int imm) { \
+    if (__shape.size() == 1) { \
+        std::vector<T> result = simd_func_1d(__data, imm); \
+        ndarray<T> result_ndarray(__shape); \
+        for (size_t i = 0; i < result.size(); ++i) { \
+            result_ndarray.__data[i] = result[i]; \
+        } \
+        return result_ndarray; \
+    } else if (__shape.size() == 2) { \
+        std::vector<std::vector<T>> A_2d(__shape[0], std::vector<T>(__shape[1])); \
+        for (size_t i = 0; i < __shape[0]; ++i) { \
+            for (size_t j = 0; j < __shape[1]; ++j) { \
+                A_2d[i][j] = __data[calculate_offset(i, j)]; \
+            } \
+        } \
+        std::vector<std::vector<T>> result_2d = simd_func_2d(A_2d, imm); \
+        ndarray<T> result_ndarray(__shape); \
+        for (size_t i = 0; i < __shape[0]; ++i) { \
+            for (size_t j = 0; j < __shape[1]; ++j) { \
+                result_ndarray.__data[calculate_offset(i, j)] = result_2d[i][j]; \
+            } \
+        } \
+        return result_ndarray; \
+    } \
+    throw std::invalid_argument("Unsupported array dimension."); \
+}
+
+#define NDARRAY_SORT_FUNC(func_name, sort_1d_func, sort_2d_func) \
+template<typename T> \
+template <typename Compare> \
+ndarray<T> ndarray<T>::func_name(Compare comp = std::less<T>{}) { \
+    if (__shape.size() == 1) { \
+        std::vector<T> result = __data; \
+        sort_1d_func(result, comp); \
+        ndarray<T> result_ndarray(__shape); \
+        for (size_t i = 0; i < result.size(); ++i) { \
+            result_ndarray.__data[i] = result[i]; \
+        } \
+        return result_ndarray; \
+    } else if (__shape.size() == 2) { \
+        std::vector<std::vector<T>> A_2d(__shape[0], std::vector<T>(__shape[1])); \
+        for (size_t i = 0; i < __shape[0]; ++i) { \
+            for (size_t j = 0; j < __shape[1]; ++j) { \
+                A_2d[i][j] = __data[calculate_offset(i, j)]; \
+            } \
+        } \
+        sort_2d_func(A_2d, comp); \
+        ndarray<T> result_ndarray(__shape); \
+        for (size_t i = 0; i < __shape[0]; ++i) { \
+            for (size_t j = 0; j < __shape[1]; ++j) { \
+                result_ndarray.__data[calculate_offset(i, j)] = A_2d[i][j]; \
+            } \
+        } \
+        return result_ndarray; \
+    } \
+    throw std::invalid_argument("Unsupported array dimension."); \
+}
+
+#define NDARRAY_CRYPTO_FUNC(func_name, crypto_func) \
+template<typename T> \
+ndarray<T> ndarray<T>::func_name(const ndarray<T>& other) { \
+    if (__shape != other.__shape) { \
+        throw std::invalid_argument("Shapes of the two ndarrays do not match."); \
+    } \
+    if (__shape.size() == 1) { \
+        std::vector<T> result = crypto_func(__data, other.__data); \
+        ndarray<T> result_ndarray(__shape); \
+        for (size_t i = 0; i < result.size(); ++i) { \
+            result_ndarray.__data[i] = result[i]; \
+        } \
+        return result_ndarray; \
+    } \
+    throw std::invalid_argument("Unsupported array dimension."); \
+}
 
 template<typename T>
 class ndarray {
@@ -55,9 +218,9 @@ public:
 
 
     // math function
-    ndarray<T> min();
+    ndarray<T> min(const ndarray<T>& other);
 
-    ndarray<T> max();
+    ndarray<T> max(const ndarray<T>& other);
 
     ndarray<T> sqrt();
 
