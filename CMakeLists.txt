@@ -36,6 +36,8 @@ include_directories(
 
 file(GLOB_RECURSE SOURCES
     ${PROJECT_SOURCE_DIR}/src/*.cpp
+    ${PROJECT_SOURCE_DIR}/src/utils/*.cpp
+    ${PROJECT_SOURCE_DIR}/src/data_structure/*.cpp
 )
 
 add_library(numpycpp STATIC ${SOURCES})
