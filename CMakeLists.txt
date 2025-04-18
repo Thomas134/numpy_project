@@ -35,9 +35,9 @@ include_directories(
 )
 
 file(GLOB_RECURSE SOURCES
-    ${PROJECT_SOURCE_DIR}/src/*.cpp
-    ${PROJECT_SOURCE_DIR}/src/utils/*.cpp
-    ${PROJECT_SOURCE_DIR}/src/data_structure/*.cpp
+    ${PROJECT_SOURCE_DIR}/include/*.cpp
+    ${PROJECT_SOURCE_DIR}/include/utils/*.cpp
+    ${PROJECT_SOURCE_DIR}/include/data_structure/*.cpp
 )
 
 add_library(numpycpp STATIC ${SOURCES})
@@ -50,7 +50,7 @@ install(TARGETS numpycpp
 
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/
     DESTINATION include/numpy
-    FILES_MATCHING PATTERN "*.hpp"
+    FILES_MATCHING PATTERN "*.cpp"
 )
 
 add_definitions(-mavx2 -fopenmp)

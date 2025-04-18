@@ -1,8 +1,28 @@
-#include "../../include/utils/simd_operators.hpp"
-#include "../../include/simd_traits.hpp"
+#ifndef SIMD_OPERATORS_HPP
+#define SIMD_OPERATORS_HPP
+
+#include <vector>
+#include "../simd_traits.cpp"
 #include <stdexcept>
 
+template <typename T, typename Traits, typename UnaryOp>
+std::vector<T> apply_unary_op_plain(const std::vector<T>& A, UnaryOp unary_op);
 
+template <typename T, typename Traits, typename UnaryOp>
+std::vector<T> apply_unary_op_simd(const std::vector<T>& A, UnaryOp unary_op);
+
+template <typename T, typename Traits, typename BinaryOp>
+std::vector<std::vector<T>> apply_binary_op_plain(const std::vector<std::vector<T>>& A,
+                                                  const std::vector<std::vector<T>>& B,
+                                                  BinaryOp binary_op);
+
+template <typename T, typename Traits, typename BinaryOp>
+std::vector<std::vector<T>> apply_binary_op_simd(const std::vector<std::vector<T>>& A,
+                                                 const std::vector<std::vector<T>>& B,
+                                                 BinaryOp binary_op);
+
+
+// implementation
 template <typename T, typename UnaryOp>
 std::vector<T> apply_unary_op_plain(const std::vector<T>& A, UnaryOp unary_op) {
     std::vector<T> result(A.size());
@@ -74,3 +94,6 @@ std::vector<T> apply_binary_op_simd(const std::vector<T>& A,
 
     return result;
 }
+
+
+#endif

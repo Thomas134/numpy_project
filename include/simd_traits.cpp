@@ -1,92 +1,9 @@
-#include "../include/simd_traits.hpp"
+#ifndef SIMD_TRAITS_HPP
+#define SIMD_TRAITS_HPP
+
 #include <immintrin.h>
 #include <cstdint>
 #include <type_traits>
-
-
-// linspace_simd
-template<typename T>
-struct linspace_simd_traits;
-
-template<>
-struct linspace_simd_traits<int16_t> {
-    using type = __m256i;
-    static constexpr int width = 16;
-    static inline type set1(int16_t val) { return _mm256_set1_epi16(val); }
-    static inline type add(type a, type b) { return _mm256_add_epi16(a, b); }
-    static inline type mul(type a, type b) { return _mm256_mullo_epi16(a, b); }
-    static inline void storeu(int16_t* ptr, type val) { _mm256_storeu_si256(reinterpret_cast<__m256i*>(ptr), val); }
-};
-
-template<>
-struct linspace_simd_traits<uint16_t> {
-    using type = __m256i;
-    static constexpr int width = 16;
-    static inline type set1(uint16_t val) { return _mm256_set1_epi16(static_cast<int16_t>(val)); }
-    static inline type add(type a, type b) { return _mm256_add_epi16(a, b); }
-    static inline type mul(type a, type b) { return _mm256_mullo_epi16(a, b); }
-    static inline void storeu(uint16_t* ptr, type val) { _mm256_storeu_si256(reinterpret_cast<__m256i*>(ptr), val); }
-};
-
-template<>
-struct linspace_simd_traits<int32_t> {
-    using type = __m256i;
-    static constexpr int width = 8;
-    static inline type set1(int32_t val) { return _mm256_set1_epi32(val); }
-    static inline type add(type a, type b) { return _mm256_add_epi32(a, b); }
-    static inline type mul(type a, type b) { return _mm256_mullo_epi32(a, b); }
-    static inline void storeu(int32_t* ptr, type val) { _mm256_storeu_si256(reinterpret_cast<__m256i*>(ptr), val); }
-};
-
-template<>
-struct linspace_simd_traits<uint32_t> {
-    using type = __m256i;
-    static constexpr int width = 8;
-    static inline type set1(uint32_t val) { return _mm256_set1_epi32(static_cast<int32_t>(val)); }
-    static inline type add(type a, type b) { return _mm256_add_epi32(a, b); }
-    static inline type mul(type a, type b) { return _mm256_mullo_epi32(a, b); }
-    static inline void storeu(uint32_t* ptr, type val) { _mm256_storeu_si256(reinterpret_cast<__m256i*>(ptr), val); }
-};
-
-template<>
-struct linspace_simd_traits<int64_t> {
-    using type = __m256i;
-    static constexpr int width = 4;
-    static inline type set1(int64_t val) { return _mm256_set1_epi64x(val); }
-    static inline type add(type a, type b) { return _mm256_add_epi64(a, b); }
-    static inline type mul(type a, type b) { return _mm256_mullo_epi64(a, b); }
-    static inline void storeu(int64_t* ptr, type val) { _mm256_storeu_si256(reinterpret_cast<__m256i*>(ptr), val); }
-};
-
-template<>
-struct linspace_simd_traits<uint64_t> {
-    using type = __m256i;
-    static constexpr int width = 4;
-    static inline type set1(uint64_t val) { return _mm256_set1_epi64x(static_cast<int64_t>(val)); }
-    static inline type add(type a, type b) { return _mm256_add_epi64(a, b); }
-    static inline type mul(type a, type b) { return _mm256_mullo_epi64(a, b); }
-    static inline void storeu(uint64_t* ptr, type val) { _mm256_storeu_si256(reinterpret_cast<__m256i*>(ptr), val); }
-};
-
-template<>
-struct linspace_simd_traits<float> {
-    using type = __m256;
-    static constexpr int width = 8;
-    static inline type set1(float val) { return _mm256_set1_ps(val); }
-    static inline type add(type a, type b) { return _mm256_add_ps(a, b); }
-    static inline type mul(type a, type b) { return _mm256_mul_ps(a, b); }
-    static inline void storeu(float* ptr, type val) { _mm256_storeu_ps(ptr, val); }
-};
-
-template<>
-struct linspace_simd_traits<double> {
-    using type = __m256d;
-    static constexpr int width = 4;
-    static inline type set1(double val) { return _mm256_set1_pd(val); }
-    static inline type add(type a, type b) { return _mm256_add_pd(a, b); }
-    static inline type mul(type a, type b) { return _mm256_mul_pd(a, b); }
-    static inline void storeu(double* ptr, type val) { _mm256_storeu_pd(ptr, val); }
-};
 
 
 // inner_product_simd
@@ -1338,3 +1255,6 @@ struct abs_simd_traits<int32_t> {
         return _mm256_abs_epi32(a);
     }
 };
+
+
+#endif

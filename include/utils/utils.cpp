@@ -1,5 +1,17 @@
-#include "../include/utils/utils.hpp"
+#ifndef UTILS_HPP
+#define UTILS_HPP
+
+#include <vector>
 #include <stdexcept>
+
+template <typename T, typename UnaryOp>
+std::vector<std::vector<T>> apply_unary_op(const std::vector<std::vector<T>>& A, UnaryOp op);
+
+template <typename T, typename BinaryOp>
+std::vector<std::vector<T>> apply_binary_op(const std::vector<std::vector<T>>& A, 
+                                            const std::vector<std::vector<T>>& B, 
+                                            BinaryOp op);
+
 
 template <typename T, typename UnaryOp>
 std::vector<std::vector<T>> apply_unary_op(const std::vector<std::vector<T>>& A, UnaryOp op) {
@@ -29,3 +41,6 @@ std::vector<std::vector<T>> apply_binary_op(const std::vector<std::vector<T>>& A
     }
     return result;
 }
+
+
+#endif

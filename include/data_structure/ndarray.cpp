@@ -11,13 +11,13 @@
 #include <cmath>
 #include <numeric>
 
-#include "dtype_trait.hpp"
+#include "dtype_trait.cpp"
 
-#include "../logical.hpp"
-#include "../math.hpp"
-#include "../parallel_for.hpp"
-#include "../shift.hpp"
-#include "../sort.hpp"
+#include "../logical.cpp"
+#include "../math.cpp"
+#include "../parallel_for.cpp"
+#include "../shift.cpp"
+#include "../sort.cpp"
 
 #define NDARRAY_UNARY_FUNC(func_name, simd_func_1d, simd_func_2d) \
 template <typename T> \

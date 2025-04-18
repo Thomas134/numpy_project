@@ -3,9 +3,9 @@
 
 #include <vector>
 
-#include "simd_traits.hpp"
-#include "utils/utils.hpp"
-#include "utils/simd_operators.hpp"
+#include "simd_traits.cpp"
+#include "utils/utils.cpp"
+#include "utils/simd_operators.cpp"
 #include <immintrin.h>
 #include <stdexcept>
 

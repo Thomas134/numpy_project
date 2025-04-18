@@ -1,6 +1,20 @@
-#include "../include/parallel_for.hpp"
+#ifndef PARALLEL_FOR_HPP
+#define PARALLEL_FOR_HPP
 
+#include <vector>
 #include <omp.h>
+
+namespace internal {
+    // apply1
+    template <typename T, typename Func>
+    void apply1(std::vector<T>& A, Func func);
+
+
+    // apply2
+    template <typename T, typename Func>
+    void apply2(std::vector<std::vector<T>>& A, Func func);
+}
+
 
 namespace internal {
     // apply1
@@ -24,3 +38,5 @@ namespace internal {
         }
     }
 }
+
+#endif

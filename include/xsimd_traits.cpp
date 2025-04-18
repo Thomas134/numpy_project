@@ -1,4 +1,6 @@
-#include "../include/xsimd_traits.hpp"
+#ifndef XSIMD_TRAITS
+#define XSIMD_TRAITS
+
 #include <xsimd/xsimd.hpp>
 #include <type_traits>
 
@@ -321,3 +323,6 @@ struct atan_simd_traits {
         return xsimd::atan(a);
     }
 };
+
+
+#endif
