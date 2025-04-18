@@ -1,4 +1,5 @@
-#include "../include/utils.hpp"
+#include "../include/utils/utils.hpp"
+#include <stdexcept>
 
 template <typename T, typename UnaryOp>
 std::vector<std::vector<T>> apply_unary_op(const std::vector<std::vector<T>>& A, UnaryOp op) {

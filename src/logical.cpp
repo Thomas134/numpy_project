@@ -3,6 +3,7 @@
 #include "../include/utils/utils.hpp"
 #include "../include/utils/simd_operators.hpp"
 #include <immintrin.h>
+#include <stdexcept>
 
 namespace internal {
     // =========================== 1D ======================================

@@ -1,5 +1,6 @@
 #include <stdexcept>
 #include <cmath>
+#include <numeric>
 
 #include "../../include/data_structure/ndarray.hpp"
 #include "../../include/data_structure/dtype_trait.hpp"
@@ -227,7 +228,7 @@ ndarray<T> ndarray<T>::dot(const ndarray<T>& other) {
         throw std::invalid_argument("Matrix dimension mismatch");
     }
 
-    std::vector<std::vector<T>> result_2d = internal::dot(__data, other.__data);
+    std::vector<std::vector<T>> result_2d = dot(__data, other.__data);
 
     std::vector<size_t> result_shape = {M, N};
     ndarray<T> result_ndarray(result_shape);
@@ -245,7 +246,7 @@ ndarray<T> ndarray<T>::add(const ndarray<T>& other) {
         throw std::invalid_argument("Shapes of the two ndarrays do not match.");
 
     if (__shape.size() == 1) {
-        std::vector<T> result = internal::add1(__data, other.__data);
+        std::vector<T> result = add1(__data, other.__data);
         ndarray<T> result_ndarray(__shape);
         for (size_t i = 0; i < result.size(); ++i)
             result_ndarray.__data[i] = result[i];
@@ -262,7 +263,7 @@ ndarray<T> ndarray<T>::add(const ndarray<T>& other) {
             }
         }
 
-        std::vector<std::vector<T>> result_2d = internal::add2(A_2d, B_2d);
+        std::vector<std::vector<T>> result_2d = add2(A_2d, B_2d);
         ndarray<T> result_ndarray(__shape);
 
         for (size_t i = 0; i < __shape[0]; ++i)
@@ -281,7 +282,7 @@ ndarray<T> ndarray<T>::sub(const ndarray<T>& other) {
         throw std::invalid_argument("Shapes of the two ndarrays do not match.");
 
     if (__shape.size() == 1) {
-        std::vector<T> result = internal::subtract1(__data, other.__data);
+        std::vector<T> result = subtract1(__data, other.__data);
         ndarray<T> result_ndarray(__shape);
         for (size_t i = 0; i < result.size(); ++i)
             result_ndarray.__data[i] = result[i];
@@ -298,7 +299,7 @@ ndarray<T> ndarray<T>::sub(const ndarray<T>& other) {
             }
         }
 
-        std::vector<std::vector<T>> result_2d = internal::subtract2(A_2d, B_2d);
+        std::vector<std::vector<T>> result_2d = subtract2(A_2d, B_2d);
         ndarray<T> result_ndarray(__shape);
 
         for (size_t i = 0; i < __shape[0]; ++i)
@@ -322,7 +323,7 @@ ndarray<T> ndarray<T>::transpose() {
         for (size_t j = 0; j < __shape[1]; ++j)
             mat_2d[i][j] = __data[calculate_offset(i, j)];
 
-    std::vector<std::vector<T>> result_2d = internal::transpose(mat_2d);
+    std::vector<std::vector<T>> result_2d = transpose(mat_2d);
     std::vector<size_t> result_shape = {__shape[1], __shape[0]};
     ndarray<T> result_ndarray(result_shape);
     

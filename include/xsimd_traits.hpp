@@ -1,5 +1,5 @@
-#ifndef XSIMD_TRAITS_HPP
-#define XSIMD_TRAITS_HPP
+#ifndef XSIMD_TRAITS
+#define XSIMD_TRAITS
 
 template <typename T>
 struct log_simd_traits;

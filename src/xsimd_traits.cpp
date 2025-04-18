@@ -2,20 +2,16 @@
 #include <xsimd/xsimd.hpp>
 #include <type_traits>
 
-
 // log_simd
 template <typename T>
-struct log_simd_traits;
-
-template <typename T>
-struct xsimd_log_traits {
+struct log_simd_traits {
     using scalar_type = T;
     using simd_type = typename std::conditional<
         std::is_same<T, float>::value,
-        xsimd::simd_type<float, xsimd::avx2>,
+        xsimd::simd_type<float>,
         typename std::conditional<
             std::is_same<T, double>::value,
-            xsimd::simd_type<double, xsimd::avx2>,
+            xsimd::simd_type<double>,
             void
         >::type
     >::type;
@@ -41,17 +37,14 @@ struct xsimd_log_traits {
 
 // log2_simd
 template <typename T>
-struct log2_simd_traits;
-
-template <typename T>
-struct xsimd_log2_traits {
+struct log2_simd_traits {
     using scalar_type = T;
     using simd_type = typename std::conditional<
         std::is_same<T, float>::value,
-        xsimd::simd_type<float, xsimd::avx2>,
+        xsimd::simd_type<float>,
         typename std::conditional<
             std::is_same<T, double>::value,
-            xsimd::simd_type<double, xsimd::avx2>,
+            xsimd::simd_type<double>,
             void
         >::type
     >::type;
@@ -76,17 +69,14 @@ struct xsimd_log2_traits {
 
 // log10_simd
 template <typename T>
-struct log10_simd_traits;
-
-template <typename T>
-struct xsimd_log10_traits {
+struct log10_simd_traits {
     using scalar_type = T;
     using simd_type = typename std::conditional<
         std::is_same<T, float>::value,
-        xsimd::simd_type<float, xsimd::avx2>,
+        xsimd::simd_type<float>,
         typename std::conditional<
             std::is_same<T, double>::value,
-            xsimd::simd_type<double, xsimd::avx2>,
+            xsimd::simd_type<double>,
             void
         >::type
     >::type;
@@ -111,17 +101,14 @@ struct xsimd_log10_traits {
 
 // sin_simd
 template <typename T>
-struct sin_simd_traits;
-
-template <typename T>
 struct sin_simd_traits {
     using scalar_type = T;
     using simd_type = typename std::conditional<
         std::is_same<T, float>::value,
-        xsimd::simd_type<float, xsimd::avx2>,
+        xsimd::simd_type<float>,
         typename std::conditional<
             std::is_same<T, double>::value,
-            xsimd::simd_type<double, xsimd::avx2>,
+            xsimd::simd_type<double>,
             void
         >::type
     >::type;
@@ -146,17 +133,14 @@ struct sin_simd_traits {
 
 // cos_simd;
 template <typename T>
-struct cos_simd_traits;
-
-template <typename T>
 struct cos_simd_traits {
     using scalar_type = T;
     using simd_type = typename std::conditional<
         std::is_same<T, float>::value,
-        xsimd::simd_type<float, xsimd::avx2>,
+        xsimd::simd_type<float>,
         typename std::conditional<
             std::is_same<T, double>::value,
-            xsimd::simd_type<double, xsimd::avx2>,
+            xsimd::simd_type<double>,
             void
         >::type
     >::type;
@@ -181,17 +165,14 @@ struct cos_simd_traits {
 
 // sincos_simd
 template <typename T>
-struct sincos_simd_traits;
-
-template <typename T>
 struct sincos_simd_traits {
     using scalar_type = T;
     using simd_type = typename std::conditional<
         std::is_same<T, float>::value,
-        xsimd::simd_type<float, xsimd::avx2>,
+        xsimd::simd_type<float>,
         typename std::conditional<
             std::is_same<T, double>::value,
-            xsimd::simd_type<double, xsimd::avx2>,
+            xsimd::simd_type<double>,
             void
         >::type
     >::type;
@@ -216,17 +197,14 @@ struct sincos_simd_traits {
 
 // tan_simd;
 template <typename T>
-struct tan_simd_traits;
-
-template <typename T>
 struct tan_simd_traits {
     using scalar_type = T;
     using simd_type = typename std::conditional<
         std::is_same<T, float>::value,
-        xsimd::simd_type<float, xsimd::avx2>,
+        xsimd::simd_type<float>,
         typename std::conditional<
             std::is_same<T, double>::value,
-            xsimd::simd_type<double, xsimd::avx2>,
+            xsimd::simd_type<double>,
             void
         >::type
     >::type;
@@ -251,17 +229,14 @@ struct tan_simd_traits {
 
 // asin_simd
 template <typename T>
-struct asin_simd_traits;
-
-template <typename T>
 struct asin_simd_traits {
     using scalar_type = T;
     using simd_type = typename std::conditional<
         std::is_same<T, float>::value,
-        xsimd::simd_type<float, xsimd::avx2>,
+        xsimd::simd_type<float>,
         typename std::conditional<
             std::is_same<T, double>::value,
-            xsimd::simd_type<double, xsimd::avx2>,
+            xsimd::simd_type<double>,
             void
         >::type
     >::type;
@@ -286,17 +261,14 @@ struct asin_simd_traits {
 
 // acos_simd
 template <typename T>
-struct acos_simd_traits;
-
-template <typename T>
 struct acos_simd_traits {
     using scalar_type = T;
     using simd_type = typename std::conditional<
         std::is_same<T, float>::value,
-        xsimd::simd_type<float, xsimd::avx2>,
+        xsimd::simd_type<float>,
         typename std::conditional<
             std::is_same<T, double>::value,
-            xsimd::simd_type<double, xsimd::avx2>,
+            xsimd::simd_type<double>,
             void
         >::type
     >::type;
@@ -321,17 +293,14 @@ struct acos_simd_traits {
 
 // atan_simd
 template <typename T>
-struct atan_simd_traits;
-
-template <typename T>
 struct atan_simd_traits {
     using scalar_type = T;
     using simd_type = typename std::conditional<
         std::is_same<T, float>::value,
-        xsimd::simd_type<float, xsimd::avx2>,
+        xsimd::simd_type<float>,
         typename std::conditional<
             std::is_same<T, double>::value,
-            xsimd::simd_type<double, xsimd::avx2>,
+            xsimd::simd_type<double>,
             void
         >::type
     >::type;

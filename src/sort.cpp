@@ -4,7 +4,7 @@
 
 
 namespace internal {
-    template <typename T, typename Compare = std::less<T>>
+    template <typename T, typename Compare>
     void sort1(std::vector<T>& A, Compare comp = Compare()) {
         if (A.size() < 8192) {
             std::sort(A.begin(), A.end(), comp);
@@ -14,7 +14,7 @@ namespace internal {
     }
 
 
-    template <typename T, typename Compare = std::less<T>>
+    template <typename T, typename Compare>
     void sort2(std::vector<std::vector<T>>& A, Compare comp = Compare()) {
         for (auto& innerVector : A) {
             if (innerVector.size() < 8192) {

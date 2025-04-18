@@ -44,7 +44,7 @@ std::vector<std::vector<T>> apply_binary_op_plain(const std::vector<std::vector<
     for (size_t i = 0; i < A.size(); ++i)
         result[i] = binary_op(A[i], B[i]);
 
-    return result[i];
+    return result;
 }
 
 

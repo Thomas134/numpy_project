@@ -5,6 +5,7 @@
 #include <vector>
 #include <array>
 #include <cstdint>
+#include <iostream>
 
 #define NDARRAY_UNARY_FUNC(func_name, simd_func_1d, simd_func_2d) \
 template <typename T> \
@@ -199,11 +200,11 @@ public:
 public:
     std::vector<uint8_t> all(int axis) const;
 
-    float mean() const;
+    // float mean() const;
 
-    double mean() const;
+    // double mean() const;
 
-    float mean(int axis) const;
+    // float mean(int axis) const;
 
 
     // logical function
