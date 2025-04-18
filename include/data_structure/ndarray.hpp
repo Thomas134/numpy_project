@@ -126,7 +126,7 @@ ndarray<T> ndarray<T>::func_name(const int imm) { \
 #define NDARRAY_SORT_FUNC(func_name, sort_1d_func, sort_2d_func) \
 template<typename T> \
 template <typename Compare> \
-ndarray<T> ndarray<T>::func_name(Compare comp = std::less<T>{}) { \
+ndarray<T> ndarray<T>::func_name(Compare comp) { \
     if (__shape.size() == 1) { \
         std::vector<T> result = __data; \
         sort_1d_func(result, comp); \
@@ -148,23 +148,6 @@ ndarray<T> ndarray<T>::func_name(Compare comp = std::less<T>{}) { \
             for (size_t j = 0; j < __shape[1]; ++j) { \
                 result_ndarray.__data[calculate_offset(i, j)] = A_2d[i][j]; \
             } \
-        } \
-        return result_ndarray; \
-    } \
-    throw std::invalid_argument("Unsupported array dimension."); \
-}
-
-#define NDARRAY_CRYPTO_FUNC(func_name, crypto_func) \
-template<typename T> \
-ndarray<T> ndarray<T>::func_name(const ndarray<T>& other) { \
-    if (__shape != other.__shape) { \
-        throw std::invalid_argument("Shapes of the two ndarrays do not match."); \
-    } \
-    if (__shape.size() == 1) { \
-        std::vector<T> result = crypto_func(__data, other.__data); \
-        ndarray<T> result_ndarray(__shape); \
-        for (size_t i = 0; i < result.size(); ++i) { \
-            result_ndarray.__data[i] = result[i]; \
         } \
         return result_ndarray; \
     } \
@@ -262,19 +245,13 @@ public:
 
     // sort function
     template <typename Compare>
-    ndarray<T> sort(Compare comp);
+    ndarray<T> sort(Compare comp = std::less<T>{});
 
 
     // shift function
     ndarray<T> slli(const int imm);
 
     ndarray<T> srli(const int imm);
-
-
-    // crypto function
-    ndarray<T> sm4rnds4(const ndarray<T>& other);
-
-    ndarray<T> sm4key4(const ndarray<T>& other);
 
 
     // matrix operations

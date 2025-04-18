@@ -10,7 +10,6 @@
 #include "../../include/parallel_for.hpp"
 #include "../../include/shift.hpp"
 #include "../../include/sort.hpp"
-#include "../../include/crypto.hpp"
 
 template <typename T>
 uint8_t bool_operation_with_row(const std::vector<T>& vec) {
@@ -205,12 +204,6 @@ NDARRAY_SORT_FUNC(sort, sort1, sort2);
 NDARRAY_SHIFT_FUNC(slli, slli1_simd, slli2_simd);
 
 NDARRAY_SHIFT_FUNC(srli, srli1_simd, srli2_simd);
-
-
-// crypto functions
-NDARRAY_CRYPTO_FUNC(sm4rnds4, sm4rnds4_1_simd);
-
-NDARRAY_CRYPTO_FUNC(sm4key4, sm4key4_1_simd);
 
 
 // matrix operations

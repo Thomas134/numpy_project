@@ -27,4 +27,4 @@ install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/
     FILES_MATCHING PATTERN "*.hpp"
 )
 
-add_definitions(-fpermissive)
+add_definitions(-mavx2)

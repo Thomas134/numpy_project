@@ -768,58 +768,6 @@ struct srli_simd_traits {
 };
 
 
-// sm4rnds4_simd
-template <typename T>
-struct sm4rnds4_simd_traits;
-
-template <typename T>
-struct sm4rnds4_simd_traits {
-    static_assert(std::is_same_v<T, int32_t> || std::is_same_v<T, uint32_t>, 
-                  "Only 32-bit signed or unsigned integers are supported for sm4rnds4.");
-    using scalar_type = T;
-    using simd_type = __m256i;
-    static constexpr size_t step = sizeof(__m256i) / sizeof(T);
-
-    static simd_type load(const scalar_type *ptr) noexcept {
-        return _mm256_loadu_si256(reinterpret_cast<const __m256i *>(ptr));
-    }
-
-    static void store(scalar_type *ptr, simd_type val) noexcept {
-        _mm256_storeu_si256(reinterpret_cast<__m256i *>(ptr), val);
-    }
-
-    static simd_type op(simd_type a, simd_type b) noexcept {
-        return _mm256_sm4rnds4_epi32(a, b);
-    }
-};
-
-
-// sm4key4_simd
-template <typename T>
-struct sm4key4_simd_traits;
-
-template <typename T>
-struct sm4key4_simd_traits {
-    static_assert(std::is_same_v<T, int32_t> || std::is_same_v<T, uint32_t>,
-                  "Only 32-bit signed or unsigned integers are supported for sm4key4.");
-    using scalar_type = T;
-    using simd_type = __m256i;
-    static constexpr size_t step = sizeof(__m256i) / sizeof(T);
-
-    static simd_type load(const scalar_type *ptr) noexcept {
-        return _mm256_loadu_si256(reinterpret_cast<const __m256i *>(ptr));
-    }
-
-    static void store(scalar_type *ptr, simd_type val) noexcept {
-        _mm256_storeu_si256(reinterpret_cast<__m256i *>(ptr), val);
-    }
-
-    static simd_type op(simd_type a, simd_type b) noexcept {
-        return _mm256_sm4key4_epi32(a, b);
-    }
-};
-
-
 // min_simd
 template <typename T>
 struct min_simd_traits;
