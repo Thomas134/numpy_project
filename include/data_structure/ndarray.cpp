@@ -181,6 +181,10 @@ private:
 public:
     ndarray(const std::vector<size_t>& shape);
 
+    void assign(const std::vector<T>& data);
+
+    void assign(const std::vector<std::vector<T>>& data);
+
     const char *dtype() const noexcept;
 
     size_t itemsize() const noexcept;
@@ -350,6 +354,35 @@ ndarray<T>::ndarray(const std::vector<size_t>& shape) : __shape(shape) {
 
     __data.resize(__size);
     compute_strides();
+}
+
+template<typename T>
+void ndarray<T>::assign(const std::vector<T>& data) {
+    if (__shape.size() != 1)
+        throw std::invalid_argument("The array is not 1D.");
+
+    if (data.size() != __size)
+        throw std::invalid_argument("Data size does not match the array size.");
+
+    __data = data;
+}
+
+template<typename T>
+void ndarray<T>::assign(const std::vector<std::vector<T>>& data) {
+    if (__shape.size() != 2)
+        throw std::invalid_argument("The array is not 2D.");
+
+    if (data.size() != __shape[0])
+        throw std::invalid_argument("Number of rows does not match the array shape.");
+    
+    for (size_t i = 0; i < data.size(); ++i)
+        if (data[i].size() != __shape[1])
+            throw std::invalid_argument("Number of columns does not match the array shape.");
+
+    __data.clear();
+
+    for (const auto& row : data)
+        __data.insert(__data.end(), row.begin(), row.end());
 }
 
 template <typename T>
