@@ -563,7 +563,7 @@ ndarray<T> ndarray<T>::add(const ndarray<T>& other) {
             for (size_t j = 0; j < __shape[1]; ++j)
                 result_ndarray.__data[result_ndarray.calculate_offset(i, j)] = result_2d[i][j];
 
-            return result_ndarray;
+        return result_ndarray;
     }
 
     throw std::invalid_argument("Unsupported array dimension.");
@@ -599,7 +599,7 @@ ndarray<T> ndarray<T>::sub(const ndarray<T>& other) {
             for (size_t j = 0; j < __shape[1]; ++j)
                 result_ndarray.__data[result_ndarray.calculate_offset(i, j)] = result_2d[i][j];
 
-            return result_ndarray;
+        return result_ndarray;
     }
 
     throw std::invalid_argument("Unsupported array dimension.");
