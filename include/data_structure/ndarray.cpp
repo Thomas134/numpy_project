@@ -280,7 +280,35 @@ public:
     T& operator()(const std::vector<size_t>& indices);
     const T& operator()(const std::vector<size_t>& indices) const;
 
-    friend std::ostream& operator<<(std::ostream& os, const ndarray<T>& arr);
+    friend std::ostream& operator<<(std::ostream& os, const ndarray<T>& arr) {
+        if (arr.__shape.size() == 1) {
+            os << "[";
+            for (size_t i = 0; i < arr.__size; ++i) {
+                if (i > 0) 
+                    os << ", ";
+                    
+                os << arr.__data[i];
+            }
+            os << "]";
+        } else if (arr.__shape.size() == 2) {
+            os << "[";
+            for (size_t i = 0; i < arr.__shape[0]; ++i) {
+                if (i > 0)
+                    os << ",\n ";
+    
+                os << "[";
+                for (size_t j = 0; j < arr.__shape[1]; ++j) {
+                    if (j > 0)
+                        os << ", ";
+    
+                    os << arr.__data[arr.calculate_offset(i, j)];
+                }
+                os << "]";
+            }
+            os << "]";
+        }
+        return os;
+    }
 };
 
 template <typename T>
@@ -625,36 +653,5 @@ const T& ndarray<T>::operator()(const std::vector<size_t>& indices) const {
     throw std::out_of_range("Invalid index.");
 }
 
-
-template <typename T>
-std::ostream& operator<<(std::ostream& os, const ndarray<T>& arr) {
-    if (arr.__shape.size() == 1) {
-        os << "[";
-        for (size_t i = 0; i < arr.__size; ++i) {
-            if (i > 0) 
-                os << ", ";
-                
-            os << arr.__data[i];
-        }
-        os << "]";
-    } else if (arr.__shape.size() == 2) {
-        os << "[";
-        for (size_t i = 0; i < arr.__shape[0]; ++i) {
-            if (i > 0)
-                os << ",\n ";
-
-            os << "[";
-            for (size_t j = 0; j < arr.__shape[1]; ++j) {
-                if (j > 0)
-                    os << ", ";
-
-                os << arr.__data[arr.calculate_offset(i, j)];
-            }
-            os << "]";
-        }
-        os << "]";
-    }
-    return os;
-}
 
 #endif // NDARRAY_HPP    
