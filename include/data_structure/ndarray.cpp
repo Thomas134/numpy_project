@@ -195,6 +195,8 @@ public:
 
     std::vector<size_t> shape() const noexcept;
 
+    std::vector<T> data() const noexcept;
+
 
 public:
     std::vector<uint8_t> all(int axis) const;
@@ -367,7 +369,7 @@ void ndarray<T>::assign(const std::vector<T>& data) {
     __data = data;
 }
 
-template<typename T>
+template <typename T>
 void ndarray<T>::assign(const std::vector<std::vector<T>>& data) {
     if (__shape.size() != 2)
         throw std::invalid_argument("The array is not 2D.");
@@ -420,6 +422,11 @@ size_t ndarray<T>::size() const noexcept {
 template <typename T>
 std::vector<size_t> ndarray<T>::shape() const noexcept {
     return __shape;
+}
+
+template <typename T>
+std::vector<T> ndarray<T>::data() const noexcept {
+    return __data;
 }
 
 template <typename T>
