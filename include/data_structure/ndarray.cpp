@@ -107,7 +107,7 @@ ndarray<T> ndarray<T>::func_name(Func func) { \
 }
 
 #define NDARRAY_SHIFT_FUNC(func_name, simd_func_1d, simd_func_2d) \
-template<typename T> \
+template <typename T> \
 ndarray<T> ndarray<T>::func_name(const int imm) { \
     if (__shape.size() == 1) { \
         std::vector<T> result = simd_func_1d(__data, imm); \
@@ -136,7 +136,7 @@ ndarray<T> ndarray<T>::func_name(const int imm) { \
 }
 
 #define NDARRAY_SORT_FUNC(func_name, sort_1d_func, sort_2d_func) \
-template<typename T> \
+template <typename T> \
 template <typename Compare> \
 ndarray<T> ndarray<T>::func_name(Compare comp) { \
     if (__shape.size() == 1) { \
@@ -166,7 +166,7 @@ ndarray<T> ndarray<T>::func_name(Compare comp) { \
     throw std::invalid_argument("Unsupported array dimension."); \
 }
 
-template<typename T>
+template <typename T>
 class ndarray {
 private:
     std::vector<T> __data;
@@ -287,32 +287,31 @@ public:
     const T& operator()(const std::vector<size_t>& indices) const;
 
     friend std::ostream& operator<<(std::ostream& os, const ndarray<T>& arr) {
+        os << "[";
         if (arr.__shape.size() == 1) {
-            os << "[";
             for (size_t i = 0; i < arr.__size; ++i) {
                 if (i > 0) 
                     os << ", ";
                     
                 os << arr.__data[i];
             }
-            os << "]";
         } else if (arr.__shape.size() == 2) {
-            os << "[";
             for (size_t i = 0; i < arr.__shape[0]; ++i) {
                 if (i > 0)
                     os << ",\n ";
-    
+                
                 os << "[";
                 for (size_t j = 0; j < arr.__shape[1]; ++j) {
                     if (j > 0)
                         os << ", ";
-    
+                    
                     os << arr.__data[arr.calculate_offset(i, j)];
                 }
                 os << "]";
             }
-            os << "]";
         }
+        os << "]";
+
         return os;
     }
 };
@@ -358,7 +357,7 @@ ndarray<T>::ndarray(const std::vector<size_t>& shape) : __shape(shape) {
     compute_strides();
 }
 
-template<typename T>
+template <typename T>
 void ndarray<T>::assign(const std::vector<T>& data) {
     if (__shape.size() != 1)
         throw std::invalid_argument("The array is not 1D.");
@@ -485,65 +484,65 @@ std::vector<uint8_t> ndarray<T>::all(int axis) const {
 
 
 // logical functions
-NDARRAY_BINARY_FUNC(logical_and, and1_simd, and2_simd);
+NDARRAY_BINARY_FUNC(logical_and, internal::and1_simd, internal::and2_simd);
 
-NDARRAY_BINARY_FUNC(logical_or, or1_simd, or2_simd);
+NDARRAY_BINARY_FUNC(logical_or, internal::or1_simd, internal::or2_simd);
 
-NDARRAY_BINARY_FUNC(logical_xor, xor1_simd, xor2_simd);
+NDARRAY_BINARY_FUNC(logical_xor, internal::xor1_simd, internal::xor2_simd);
 
-NDARRAY_BINARY_FUNC(logical_andnot, andnot1_simd, andnot2_simd);
+NDARRAY_BINARY_FUNC(logical_andnot, internal::andnot1_simd, internal::andnot2_simd);
 
 
 // math functions
-NDARRAY_BINARY_FUNC(min, min1_simd, min2_simd);
+NDARRAY_BINARY_FUNC(min, internal::min1_simd, internal::min2_simd);
 
-NDARRAY_BINARY_FUNC(max, max1_simd, max2_simd);
+NDARRAY_BINARY_FUNC(max, internal::max1_simd, internal::max2_simd);
     
-NDARRAY_UNARY_FUNC(sqrt, sqrt1_simd, sqrt2_simd);
+NDARRAY_UNARY_FUNC(sqrt, internal::sqrt1_simd, internal::sqrt2_simd);
 
-NDARRAY_UNARY_FUNC(rsqrt, rsqrt1_simd, rsqrt2_simd);
+NDARRAY_UNARY_FUNC(rsqrt, internal::rsqrt1_simd, internal::rsqrt2_simd);
 
-NDARRAY_UNARY_FUNC(round, round1_simd, round2_simd);
+NDARRAY_UNARY_FUNC(round, internal::round1_simd, internal::round2_simd);
 
-NDARRAY_UNARY_FUNC(ceil, ceil1_simd, ceil2_simd);
+NDARRAY_UNARY_FUNC(ceil, internal::ceil1_simd, internal::ceil2_simd);
 
-NDARRAY_UNARY_FUNC(floor, floor1_simd, floor2_simd);
+NDARRAY_UNARY_FUNC(floor, internal::floor1_simd, internal::floor2_simd);
 
-NDARRAY_UNARY_FUNC(abs, abs1_simd, abs2_simd);
+NDARRAY_UNARY_FUNC(abs, internal::abs1_simd, internal::abs2_simd);
 
-NDARRAY_UNARY_FUNC(log, log_1_simd, log_2_simd);
+NDARRAY_UNARY_FUNC(log, internal::log_1_simd, internal::log_2_simd);
 
-NDARRAY_UNARY_FUNC(log2, log2_1_simd, log2_2_simd);
+NDARRAY_UNARY_FUNC(log2, internal::log2_1_simd, internal::log2_2_simd);
 
-NDARRAY_UNARY_FUNC(log10, log10_1_simd, log10_2_simd);
+NDARRAY_UNARY_FUNC(log10, internal::log10_1_simd, internal::log10_2_simd);
 
-NDARRAY_UNARY_FUNC(sin, sin1_simd, sin2_simd);
+NDARRAY_UNARY_FUNC(sin, internal::sin1_simd, internal::sin2_simd);
 
-NDARRAY_UNARY_FUNC(cos, cos1_simd, cos2_simd);
+NDARRAY_UNARY_FUNC(cos, internal::cos1_simd, internal::cos2_simd);
 
-NDARRAY_UNARY_FUNC(sincos, sincos1_simd, sincos2_simd);
+NDARRAY_UNARY_FUNC(sincos, internal::sincos1_simd, internal::sincos2_simd);
 
-NDARRAY_UNARY_FUNC(tan, tan1_simd, tan2_simd);
+NDARRAY_UNARY_FUNC(tan, internal::tan1_simd, internal::tan2_simd);
 
-NDARRAY_UNARY_FUNC(asin, asin1_simd, asin2_simd);
+NDARRAY_UNARY_FUNC(asin, internal::asin1_simd, internal::asin2_simd);
 
-NDARRAY_UNARY_FUNC(acos, acos1_simd, acos2_simd);
+NDARRAY_UNARY_FUNC(acos, internal::acos1_simd, internal::acos2_simd);
 
-NDARRAY_UNARY_FUNC(atan, atan1_simd, atan2_simd);
+NDARRAY_UNARY_FUNC(atan, internal::atan1_simd, internal::atan2_simd);
 
 
 // parallel functions
-NDARRAY_APPLY_FUNC(apply, apply1, apply2);
+NDARRAY_APPLY_FUNC(apply, internal::apply1, internal::apply2);
 
 
 // sort functions
-NDARRAY_SORT_FUNC(sort, sort1, sort2);
+NDARRAY_SORT_FUNC(sort, internal::sort1, internal::sort2);
 
 
 // shift functions
-NDARRAY_SHIFT_FUNC(slli, slli1_simd, slli2_simd);
+NDARRAY_SHIFT_FUNC(slli, internal::slli1_simd, internal::slli2_simd);
 
-NDARRAY_SHIFT_FUNC(srli, srli1_simd, srli2_simd);
+NDARRAY_SHIFT_FUNC(srli, internal::srli1_simd, internal::srli2_simd);
 
 
 // matrix operations

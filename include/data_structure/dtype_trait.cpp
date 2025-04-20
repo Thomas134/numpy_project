@@ -5,7 +5,7 @@
 #include <cstddef>
 #include <string>
 
-template<typename T> 
+template <typename T> 
 struct dtype_traits;
 
 template<>
