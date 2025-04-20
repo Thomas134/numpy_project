@@ -11,6 +11,9 @@ std::vector<T> apply_unary_op_plain(const std::vector<T>& A, UnaryOp unary_op);
 template <typename T, typename Traits, typename UnaryOp>
 std::vector<T> apply_unary_op_simd(const std::vector<T>& A, UnaryOp unary_op);
 
+template <typename T, typename BinaryOp>
+std::vector<T> apply_binary_op_plain(const std::vector<T>& A, const std::vector<T>& B, BinaryOp binary_op);
+
 template <typename T, typename Traits, typename BinaryOp>
 std::vector<std::vector<T>> apply_binary_op_plain(const std::vector<std::vector<T>>& A,
                                                   const std::vector<std::vector<T>>& B,
@@ -54,6 +57,36 @@ std::vector<T> apply_unary_op_simd(const std::vector<T>& A, UnaryOp unary_op) {
     return result;
 }
 
+template <typename T, typename Traits, typename UnaryOp>
+std::vector<T> apply_unary_op_simd_shift(const std::vector<T>& A, const int imm8, UnaryOp unary_op) {
+    if (A.empty())
+        throw std::invalid_argument("Input vector can't be empty");
+
+    std::vector<T> result(A.size());
+    size_t i = 0;
+    const size_t simd_step = Traits::step;
+
+    for (; i <= A.size() - simd_step; i += simd_step) {
+        auto vec_a = Traits::load(&A[i]);
+        auto vec_result = Traits::op(vec_a, imm8);
+        Traits::store(&result[i], vec_result);
+    }
+
+    for (; i < A.size(); ++i)
+        result[i] = unary_op(A[i]);
+
+    return result;
+}
+
+template <typename T, typename BinaryOp>
+std::vector<T> apply_binary_op_plain(const std::vector<T>& A, const std::vector<T>& B, BinaryOp binary_op) {
+    std::vector<T> result(A.size());
+
+    for (size_t i = 0; i < A.size(); ++i)
+        result[i] = binary_op(A[i], B[i]);
+
+    return result;
+}
 
 template <typename T, typename BinaryOp>
 std::vector<std::vector<T>> apply_binary_op_plain(const std::vector<std::vector<T>>& A,

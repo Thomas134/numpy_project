@@ -7,8 +7,8 @@ TEST(NDArrayShiftTest, Slli1DTest) {
     std::vector<int> data = {1, 2, 3, 4};
     arr.assign(data);
 
-    int imm = 2;
-    ndarray<int> result = arr.slli(imm);
+    constexpr int8_t imm = 2;
+    ndarray<int> result = arr.slli(2);
     std::vector<int> resultData = result.data();
 
     for (size_t i = 0; i < data.size(); ++i) {
@@ -23,8 +23,8 @@ TEST(NDArrayShiftTest, Srli1DTest) {
     std::vector<int> data = {4, 8, 12, 16};
     arr.assign(data);
 
-    int imm = 2;
-    ndarray<int> result = arr.srli(imm);
+    constexpr int8_t imm = 2;
+    ndarray<int> result = arr.srli(2);
     std::vector<int> resultData = result.data();
 
     for (size_t i = 0; i < data.size(); ++i) {
@@ -39,8 +39,8 @@ TEST(NDArrayShiftTest, Slli2DTest) {
     std::vector<std::vector<int>> data = {{1, 2}, {3, 4}};
     arr.assign(data);
 
-    int imm = 2;
-    ndarray<int> result = arr.slli(imm);
+    constexpr int8_t imm = 2;
+    ndarray<int> result = arr.slli(2);
     std::vector<int> resultData = result.data();
 
     size_t index = 0;
@@ -58,8 +58,8 @@ TEST(NDArrayShiftTest, Srli2DTest) {
     std::vector<std::vector<int>> data = {{4, 8}, {12, 16}};
     arr.assign(data);
 
-    int imm = 2;
-    ndarray<int> result = arr.srli(imm);
+    constexpr int8_t imm = 2;
+    ndarray<int> result = arr.srli(2);
     std::vector<int> resultData = result.data();
 
     size_t index = 0;

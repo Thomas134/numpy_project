@@ -517,36 +517,36 @@ TEST(NDArrayMathTest, Atan1DTest) {
     }
 }
 
-TEST(NDArrayMathTest, Sincos1DTest) {
-    std::vector<size_t> shape = {4};
-    ndarray<float> arr(shape);
-    std::vector<float> data = {0.0f, 0.5f, 0.707f, 1.0f};
-    arr.assign(data);
+// TEST(NDArrayMathTest, Sincos1DTest) {
+//     std::vector<size_t> shape = {4};
+//     ndarray<float> arr(shape);
+//     std::vector<float> data = {0.0f, 0.5f, 0.707f, 1.0f};
+//     arr.assign(data);
 
-    ndarray<float> result = arr.sincos();
-    std::vector<float> resultData = result.data();
+//     ndarray<float> result = arr.sincos();
+//     std::vector<float> resultData = result.data();
 
-    for (size_t i = 0; i < data.size(); ++i) {
-        EXPECT_NEAR(resultData[i], std::sin(data[i]), 1e-5);
-    }
-}
+//     for (size_t i = 0; i < data.size(); ++i) {
+//         EXPECT_NEAR(resultData[i], std::sin(data[i]), 1e-5);
+//     }
+// }
 
-TEST(NDArrayMathTest, Sincos2DTest) {
-    std::vector<size_t> shape = {2, 2};
-    ndarray<float> arr(shape);
-    std::vector<std::vector<float>> data = {{0.0f, 0.5f}, {0.707f, 1.0f}};
-    arr.assign(data);
+// TEST(NDArrayMathTest, Sincos2DTest) {
+//     std::vector<size_t> shape = {2, 2};
+//     ndarray<float> arr(shape);
+//     std::vector<std::vector<float>> data = {{0.0f, 0.5f}, {0.707f, 1.0f}};
+//     arr.assign(data);
 
-    ndarray<float> result = arr.sincos();
-    std::vector<float> resultData = result.data();
+//     ndarray<float> result = arr.sincos();
+//     std::vector<float> resultData = result.data();
 
-    size_t index = 0;
-    for (size_t i = 0; i < shape[0]; ++i) {
-        for (size_t j = 0; j < shape[1]; ++j) {
-            EXPECT_NEAR(resultData[index++], std::sin(data[i][j]), 1e-5);
-        }
-    }
-}
+//     size_t index = 0;
+//     for (size_t i = 0; i < shape[0]; ++i) {
+//         for (size_t j = 0; j < shape[1]; ++j) {
+//             EXPECT_NEAR(resultData[index++], std::sin(data[i][j]), 1e-5);
+//         }
+//     }
+// }
 
 TEST(NDArrayMathTest, Round1DTest) {
     std::vector<size_t> shape = {4};

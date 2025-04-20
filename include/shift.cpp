@@ -43,7 +43,7 @@ namespace internal {
         if (A.size() < 32)
             return apply_unary_op_plain(A, [imm8](const T& element) { return element << imm8; }); 
 
-        return apply_unary_op_simd<T, slli_simd_traits<T>>(A, [imm8](const T& element) { return element << imm8; });
+        return apply_unary_op_simd_shift<T, slli_simd_traits<T>>(A, imm8, [imm8](const T& element) { return element << imm8; });
     }
 
 
@@ -53,7 +53,7 @@ namespace internal {
         if (A.size() < 32)
             return apply_unary_op_plain(A, [imm8](const T& element) { return element >> imm8; });
 
-        return apply_unary_op_simd<T, srli_simd_traits<T>>(A, [imm8](const T& element) { return element >> imm8; });
+        return apply_unary_op_simd_shift<T, srli_simd_traits<T>>(A, imm8, [imm8](const T& element) { return element >> imm8; });
     }
 
 
@@ -61,15 +61,15 @@ namespace internal {
 
     // slli2_simd
     template <typename T>
-    std::vector<std::vector<T>> slli2_simd(const std::vector<std::vector<T>>& A, const int imm) {
-        return apply_unary_op(A, slli1_simd);
+    std::vector<std::vector<T>> slli2_simd(const std::vector<std::vector<T>>& A, const int imm8) {
+        return apply_unary_op_shift(A, imm8, slli1_simd<T>);
     }
 
 
     // srli2_simd
     template <typename T>
-    std::vector<std::vector<T>> srli2_simd(const std::vector<std::vector<T>>& A, const int imm) {
-        return apply_unary_op(A, srli1_simd);
+    std::vector<std::vector<T>> srli2_simd(const std::vector<std::vector<T>>& A, const int imm8) {
+        return apply_unary_op_shift(A, imm8, srli1_simd<T>);
     }
 }
 

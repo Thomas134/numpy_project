@@ -202,9 +202,13 @@ namespace internal {
     template <typename T>
     std::vector<T> min1_simd(const std::vector<T>& A, const std::vector<T>& B) {
         if (A.size() < 32)
-            return apply_binary_op_plain(A, B, std::min);
+            return apply_binary_op_plain(A, B,  [](const T& a, const T& b) {
+                return std::min(a, b);
+            });
 
-        return apply_binary_op_simd<T, min_simd_traits<T>>(A, B, std::min);        
+        return apply_binary_op_simd<T, min_simd_traits<T>>(A, B,  [](const T& a, const T& b) {
+            return std::min(a, b);
+        });        
     }
 
 
@@ -212,9 +216,13 @@ namespace internal {
     template <typename T>
     std::vector<T> max1_simd(const std::vector<T>& A, const std::vector<T>& B) {
         if (A.size() < 32)
-            return apply_binary_op_plain(A, B, std::max);
+            return apply_binary_op_plain(A, B,  [](const T& a, const T& b) {
+                return std::max(a, b);
+            });
 
-        return apply_binary_op_simd<T, max_simd_traits<T>>(A, B, std::max);        
+        return apply_binary_op_simd<T, max_simd_traits<T>>(A, B,  [](const T& a, const T& b) {
+            return std::max(a, b);
+        });        
     }
 
 
@@ -224,9 +232,13 @@ namespace internal {
         static_assert(std::is_same_v<T, float> || std::is_same_v<T, double>);
 
         if (A.size() < 32)
-            return apply_unary_op_plain(A, std::sqrt);
+            return apply_unary_op_plain(A,  [](const T& a) {
+                return std::sqrt(a);
+            });
 
-        return apply_unary_op_simd<T, sqrt_simd_traits<T>>(A, std::sqrt);
+        return apply_unary_op_simd<T, sqrt_simd_traits<T>>(A,  [](const T& a) {
+            return std::sqrt(a);
+        });
     }
 
 
@@ -238,7 +250,7 @@ namespace internal {
         if (A.size() < 32)
             return apply_unary_op_plain(A, [](const T& element) { return 1 / std::sqrt(element); });
 
-        return apply_unary_op_simd<T, rsqrt_simd_traits<T>>(A, std::sqrt);
+        return apply_unary_op_simd<T, rsqrt_simd_traits<T>>(A, [](const T& element) { return 1 / std::sqrt(element); });
     }
 
 
@@ -248,9 +260,13 @@ namespace internal {
         static_assert(std::is_same_v<T, float> || std::is_same_v<T, double>);
 
         if (A.size() < 32)
-            return apply_unary_op_plain(A, std::round);
+            return apply_unary_op_plain(A, [](const T& a) {
+                return std::round(a);
+            });
     
-        return apply_unary_op_simd<T, round_simd_traits<T>>(A, std::round);
+        return apply_unary_op_simd<T, round_simd_traits<T>>(A, [](const T& a) {
+            return std::round(a);
+        });
     }
 
 
@@ -260,9 +276,13 @@ namespace internal {
         static_assert(std::is_same_v<T, float> || std::is_same_v<T, double>);
 
         if (A.size() < 32)
-            return apply_unary_op_plain(A, std::ceil);
+            return apply_unary_op_plain(A, [](const T& a) {
+                return std::ceil(a);
+            });
 
-        return apply_unary_op_simd<T, ceil_simd_traits<T>>(A, std::ceil);
+        return apply_unary_op_simd<T, ceil_simd_traits<T>>(A, [](const T& a) {
+            return std::ceil(a);
+        });
     }
 
 
@@ -272,9 +292,13 @@ namespace internal {
         static_assert(std::is_same_v<T, float> || std::is_same_v<T, double>);
 
         if (A.size() < 32)
-            return apply_unary_op_plain(A, std::floor);
+            return apply_unary_op_plain(A, [](const T& a) {
+                return std::floor(a);
+            });
 
-        return apply_unary_op_simd<T, floor_simd_traits<T>>(A, std::floor);
+        return apply_unary_op_simd<T, floor_simd_traits<T>>(A, [](const T& a) {
+            return std::floor(a);
+        });
     }
 
 
@@ -282,9 +306,13 @@ namespace internal {
     template <typename T>
     std::vector<T> abs1_simd(const std::vector<T>& A) {
         if (A.size() < 32)
-            return apply_unary_op_plain(A, std::abs);
+            return apply_unary_op_plain(A, [](const T& a) {
+                return std::abs(a);
+            });
 
-        return apply_unary_op_simd<T, abs_simd_traits<T>>(A, std::abs);
+        return apply_unary_op_simd<T, abs_simd_traits<T>>(A, [](const T& a) {
+            return std::abs(a);
+        });
     }
 
 
@@ -292,9 +320,13 @@ namespace internal {
     template <typename T>
     std::vector<T> log_1_simd(const std::vector<T>& A) {
         if (A.size() < 32)
-            return apply_unary_op_plain(A, std::log);
+            return apply_unary_op_plain(A, [](const T& a) {
+                return std::log(a);
+            });
 
-        return apply_unary_op_simd<T, log_simd_traits<T>>(A, std::log);
+        return apply_unary_op_simd<T, log_simd_traits<T>>(A, [](const T& a) {
+            return std::log(a);
+        });
     }
 
 
@@ -302,9 +334,13 @@ namespace internal {
     template <typename T>
     std::vector<T> log2_1_simd(const std::vector<T>& A) {
         if (A.size() < 32)
-            return apply_unary_op_plain(A, std::log2);
+            return apply_unary_op_plain(A, [](const T& a) {
+                return std::log2(a);
+            });
 
-        return apply_unary_op_simd<T, log2_simd_traits<T>>(A, std::log2);
+        return apply_unary_op_simd<T, log2_simd_traits<T>>(A, [](const T& a) {
+            return std::log2(a);
+        });
     }
 
 
@@ -312,9 +348,13 @@ namespace internal {
     template <typename T>
     std::vector<T> log10_1_simd(const std::vector<T>& A) {
         if (A.size() < 32)
-            return apply_unary_op_plain(A, std::log10);
+            return apply_unary_op_plain(A, [](const T& a) {
+                return std::log10(a);
+            });
 
-        return apply_unary_op_simd<T, log10_simd_traits<T>>(A, std::log10);
+        return apply_unary_op_simd<T, log10_simd_traits<T>>(A, [](const T& a) {
+            return std::log10(a);
+        });
     }
 
 
@@ -322,9 +362,13 @@ namespace internal {
     template <typename T>
     std::vector<T> sin1_simd(const std::vector<T>& A) {
         if (A.size() < 32)
-            return apply_unary_op_plain(A, std::sin);
+            return apply_unary_op_plain(A, [](const T& a) {
+                return std::sin(a);
+            });
 
-        return apply_unary_op_simd<T, sin_simd_traits<T>>(A, std::sin);
+        return apply_unary_op_simd<T, sin_simd_traits<T>>(A, [](const T& a) {
+            return std::sin(a);
+        });
     }
 
 
@@ -332,9 +376,13 @@ namespace internal {
     template <typename T>
     std::vector<T> cos1_simd(const std::vector<T>& A) {
         if (A.size() < 32)
-            return apply_unary_op_plain(A, std::cos);
+            return apply_unary_op_plain(A, [](const T& a) {
+                return std::cos(a);
+            });
 
-        return apply_unary_op_simd<T, cos_simd_traits<T>>(A, std::cos);
+        return apply_unary_op_simd<T, cos_simd_traits<T>>(A, [](const T& a) {
+            return std::cos(a);
+        });
     }
 
 
@@ -345,9 +393,13 @@ namespace internal {
     template <typename T>
     std::vector<T> tan1_simd(const std::vector<T>& A) {
         if (A.size() < 32)
-            return apply_unary_op_plain(A, std::tan);
+            return apply_unary_op_plain(A, [](const T& a) {
+                return std::tan(a);
+            });
 
-        return apply_unary_op_simd<T, tan_simd_traits<T>>(A, std::tan);
+        return apply_unary_op_simd<T, tan_simd_traits<T>>(A, [](const T& a) {
+            return std::tan(a);
+        });
     }
 
 
@@ -355,9 +407,13 @@ namespace internal {
     template <typename T>
     std::vector<T> asin1_simd(const std::vector<T>& A) {
         if (A.size() < 32)
-            return apply_unary_op_plain(A, std::asin);
+            return apply_unary_op_plain(A, [](const T& a) {
+                return std::asin(a);
+            });
 
-        return apply_unary_op_simd<T, asin_simd_traits<T>>(A, std::asin);
+        return apply_unary_op_simd<T, asin_simd_traits<T>>(A, [](const T& a) {
+            return std::asin(a);
+        });
     }
 
 
@@ -365,9 +421,13 @@ namespace internal {
     template <typename T>
     std::vector<T> acos1_simd(const std::vector<T>& A) {
         if (A.size() < 32)
-            return apply_unary_op_plain(A, std::acos);
+            return apply_unary_op_plain(A, [](const T& a) {
+                return std::acos(a);
+            });
 
-        return apply_unary_op_simd<T, acos_simd_traits<T>>(A, std::acos);
+        return apply_unary_op_simd<T, acos_simd_traits<T>>(A, [](const T& a) {
+            return std::acos(a);
+        });
     }
 
 
@@ -375,9 +435,13 @@ namespace internal {
     template <typename T>
     std::vector<T> atan1_simd(const std::vector<T>& A) {
         if (A.size() < 32)
-            return apply_unary_op_plain(A, std::atan);
+            return apply_unary_op_plain(A, [](const T& a) {
+                return std::atan(a);
+            });
 
-        return apply_unary_op_simd<T, atan_simd_traits<T>>(A, std::atan);
+        return apply_unary_op_simd<T, atan_simd_traits<T>>(A, [](const T& a) {
+            return std::atan(a);
+        });
     }
 
 
@@ -387,7 +451,7 @@ namespace internal {
     template <typename T>
     std::vector<std::vector<T>> min2_simd(const std::vector<std::vector<T>>& A, 
                                           const std::vector<std::vector<T>>& B) {
-        return apply_binary_op(A, B, min1_simd);
+        return apply_binary_op(A, B, min1_simd<T>);
     }
 
 
@@ -395,112 +459,112 @@ namespace internal {
     template <typename T>
     std::vector<std::vector<T>> max2_simd(const std::vector<std::vector<T>>& A, 
                                           const std::vector<std::vector<T>>& B) {
-        return apply_binary_op(A, B, max1_simd);
+        return apply_binary_op(A, B, max1_simd<T>);
     }
 
 
     // sqrt2_simd
     template <typename T>
     std::vector<std::vector<T>> sqrt2_simd(const std::vector<std::vector<T>>& A) {
-        return apply_unary_op(A, sqrt1_simd);
+        return apply_unary_op(A, sqrt1_simd<T>);
     }
 
 
     // rsqrt2_simd
     template <typename T>
     std::vector<std::vector<T>> rsqrt2_simd(const std::vector<std::vector<T>>& A) {
-        return apply_unary_op(A, rsqrt1_simd);
+        return apply_unary_op(A, rsqrt1_simd<T>);
     }
 
 
     // round2_simd
     template <typename T>
     std::vector<std::vector<T>> round2_simd(const std::vector<std::vector<T>>& A) {
-        return apply_unary_op(A, round1_simd);
+        return apply_unary_op(A, round1_simd<T>);
     }
 
 
     // ceil2_simd
     template <typename T>
     std::vector<std::vector<T>> ceil2_simd(const std::vector<std::vector<T>>& A) {
-        return apply_unary_op(A, ceil1_simd);
+        return apply_unary_op(A, ceil1_simd<T>);
     }
 
 
     // floor2_simd
     template <typename T>
     std::vector<std::vector<T>> floor2_simd(const std::vector<std::vector<T>>& A) {
-        return apply_unary_op(A, floor1_simd);
+        return apply_unary_op(A, floor1_simd<T>);
     }
 
 
     // abs2_simd
     template <typename T>
     std::vector<std::vector<T>> abs2_simd(const std::vector<std::vector<T>>& A) {
-        return apply_unary_op(A, abs1_simd);
+        return apply_unary_op(A, abs1_simd<T>);
     }
 
 
     // log_2_simd
     template <typename T>
     std::vector<std::vector<T>> log_2_simd(const std::vector<std::vector<T>>& A) {
-        return apply_unary_op(A, log_1_simd);
+        return apply_unary_op(A, log_1_simd<T>);
     }
 
 
     // log2_2_simd
     template <typename T>
     std::vector<std::vector<T>> log2_2_simd(const std::vector<std::vector<T>>& A) {
-        return apply_unary_op(A, log2_1_simd);
+        return apply_unary_op(A, log2_1_simd<T>);
     }
 
 
     // log10_2_simd
     template <typename T>
     std::vector<std::vector<T>> log10_2_simd(const std::vector<std::vector<T>>& A) {
-        return apply_unary_op(A, log10_1_simd);
+        return apply_unary_op(A, log10_1_simd<T>);
     }
 
 
     // sin2_simd
     template <typename T>
     std::vector<std::vector<T>> sin2_simd(const std::vector<std::vector<T>>& A) {
-        return apply_unary_op(A, sin1_simd);
+        return apply_unary_op(A, sin1_simd<T>);
     }
 
 
     // cos2_simd
     template <typename T>
     std::vector<std::vector<T>> cos2_simd(const std::vector<std::vector<T>>& A) {
-        return apply_unary_op(A, cos1_simd);
+        return apply_unary_op(A, cos1_simd<T>);
     }
 
 
     // tan2_simd
     template <typename T>
     std::vector<std::vector<T>> tan2_simd(const std::vector<std::vector<T>>& A) {
-        return apply_unary_op(A, tan1_simd);
+        return apply_unary_op(A, tan1_simd<T>);
     }
 
 
     // asin2_simd
     template <typename T>
     std::vector<std::vector<T>> asin2_simd(const std::vector<std::vector<T>>& A) {
-        return apply_unary_op(A, asin1_simd);
+        return apply_unary_op(A, asin1_simd<T>);
     }
 
 
     // acos2_simd
     template <typename T>
     std::vector<std::vector<T>> acos2_simd(const std::vector<std::vector<T>>& A) {
-        return apply_unary_op(A, acos1_simd);
+        return apply_unary_op(A, acos1_simd<T>);
     }
 
 
     // atan2_simd
     template <typename T>
     std::vector<std::vector<T>> atan2_simd(const std::vector<std::vector<T>>& A) {
-        return apply_unary_op(A, atan1_simd);
+        return apply_unary_op(A, atan1_simd<T>);
     }
 }
 

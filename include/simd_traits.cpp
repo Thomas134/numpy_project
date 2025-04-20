@@ -639,9 +639,6 @@ struct testc_simd_traits<double> {
 
 // slli_simd
 template <typename T>
-struct slli_simd_traits;
-
-template <typename T>
 struct slli_simd_traits {
     using scalar_type = T;
     using simd_type = __m256i;
@@ -656,15 +653,15 @@ struct slli_simd_traits {
     }
 
     static simd_type op(simd_type a, int imm8) noexcept {
-        return _mm256_slli_si256(a, imm8);
+        for (int i = 0; i < imm8; ++i) {
+            a = _mm256_slli_epi32(a, 1);
+        }
+        return a;
     }
 };
 
 
 // srli_simd
-template <typename T>
-struct srli_simd_traits;
-
 template <typename T>
 struct srli_simd_traits {
     using scalar_type = T;
@@ -680,7 +677,10 @@ struct srli_simd_traits {
     }
 
     static simd_type op(simd_type a, int imm8) noexcept {
-        return _mm256_srli_si256(a, imm8);
+        for (int i = 0; i < imm8; ++i) {
+            a = _mm256_srli_epi32(a, 1);
+        }
+        return a;
     }
 };
 
@@ -1253,6 +1253,46 @@ struct abs_simd_traits<int32_t> {
 
     static simd_type op(simd_type a) noexcept {
         return _mm256_abs_epi32(a);
+    }
+};
+
+template <>
+struct abs_simd_traits<float> {
+    using scalar_type = float;
+    using simd_type = __m256;
+    static constexpr size_t step = 8;
+
+    static simd_type load(const scalar_type *ptr) noexcept {
+        return _mm256_loadu_ps(ptr);
+    }
+
+    static void store(scalar_type *ptr, simd_type val) noexcept {
+        _mm256_storeu_ps(ptr, val);
+    }
+
+    static simd_type op(simd_type a) noexcept {
+        __m256 zero = _mm256_setzero_ps();
+        return _mm256_max_ps(_mm256_sub_ps(zero, a), a);
+    }
+};
+
+template <>
+struct abs_simd_traits<double> {
+    using scalar_type = double;
+    using simd_type = __m256d;
+    static constexpr size_t step = 4;
+
+    static simd_type load(const scalar_type *ptr) noexcept {
+        return _mm256_loadu_pd(ptr);
+    }
+
+    static void store(scalar_type *ptr, simd_type val) noexcept {
+        _mm256_storeu_pd(ptr, val);
+    }
+
+    static simd_type op(simd_type a) noexcept {
+        __m256d zero = _mm256_setzero_pd();
+        return _mm256_max_pd(_mm256_sub_pd(zero, a), a);
     }
 };
 
