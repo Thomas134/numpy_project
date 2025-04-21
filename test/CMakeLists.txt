@@ -8,17 +8,21 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
 
-add_executable(numpy_tests
-    test/test_logical.hpp
-    test/test_apply.hpp
-    test/test_basic_property.hpp
-    test/test_matrix_operations.hpp
-    test/test_shift.hpp
-    test/test_sort.hpp
-    test/test_math.hpp
+include_directories(
+    ${PROJECT_SOURCE_DIR}/../include
+    ${PROJECT_SOURCE_DIR}/../include/utils
+    ${PROJECT_SOURCE_DIR}/../include/data_structure
 )
 
-target_link_libraries(numpy_tests ${GTEST_LIBRARIES} pthread)
+file(GLOB_RECURSE TEST_SOURCES
+    ${PROJECT_SOURCE_DIR}/test_*.hpp
+    ${PROJECT_SOURCE_DIR}/run_all_tests.cpp
+)
+
+add_executable(run_all_tests ${TEST_SOURCES})
+
+target_link_libraries(run_all_tests ${GTEST_LIBRARIES} ${BLAS_LIBRARIES})
+
+target_link_libraries(run_all_tests numpycpp)
 
 enable_testing()
-add_test(NAME numpy_tests COMMAND numpy_tests)

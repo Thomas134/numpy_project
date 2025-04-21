@@ -54,3 +54,5 @@ install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/
 )
 
 add_definitions(-mavx2 -fopenmp)
+
+add_subdirectory(test)
