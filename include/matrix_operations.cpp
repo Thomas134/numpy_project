@@ -162,22 +162,6 @@ namespace internal {
             }
 
             return result;
-        } else if constexpr (std::is_integral_v<T>) {
-            std::vector<std::vector<int>> int_mat(rows, std::vector<int>(cols));
-
-            for (size_t i = 0; i < rows; ++i)
-                for (size_t j = 0; j < cols; ++j)
-                    int_mat[i][j] = static_cast<int>(mat[i][j]);
-
-            auto int_result = transpose<int>(int_mat);
-
-            std::vector<std::vector<T>> result(cols, std::vector<T>(rows));
-
-            for (size_t i = 0; i < cols; ++i)
-                for (size_t j = 0; j < rows; ++j)
-                    result[i][j] = static_cast<T>(int_result[i][j]);
-
-            return result;
         } else {
             std::vector<std::vector<T>> result(cols, std::vector<T>(rows));
             for (size_t i = 0; i < rows; ++i)

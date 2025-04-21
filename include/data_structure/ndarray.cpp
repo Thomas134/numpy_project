@@ -563,7 +563,17 @@ ndarray<T> ndarray<T>::dot(const ndarray<T>& other) {
         throw std::invalid_argument("Matrix dimension mismatch");
     }
 
-    std::vector<std::vector<T>> result_2d = internal::dot(__2d_data.value(), other.__2d_data.value());
+    std::vector<std::vector<T>> A_2d(__shape[0], std::vector<T>(__shape[1]));
+    std::vector<std::vector<T>> B_2d(__shape[0], std::vector<T>(__shape[1]));
+
+    for (size_t i = 0; i < __shape[0]; ++i) {
+        for (size_t j = 0; j < __shape[1]; ++j) {
+            A_2d[i][j] = __data[calculate_offset(i, j)];
+            B_2d[i][j] = other.__data[other.calculate_offset(i, j)];
+        }
+    }
+
+    std::vector<std::vector<T>> result_2d = internal::dot(A_2d, B_2d);
 
     std::vector<size_t> result_shape = {M, N};
     ndarray<T> result_ndarray(result_shape);

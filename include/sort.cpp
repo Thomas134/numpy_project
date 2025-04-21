@@ -6,6 +6,13 @@
 #include <boost/sort/pdqsort/pdqsort.hpp>
 #include <algorithm>
 
+template <typename T>
+struct CompareRows {
+    bool operator()(const std::vector<T>& row1, const std::vector<T>& row2) const {
+        return row1[0] < row2[0];
+    }
+};
+
 namespace internal {
     // sort1
     template <typename T, typename Compare>
@@ -14,7 +21,7 @@ namespace internal {
 
     // sort2
     template <typename T, typename Compare>
-    void sort2(std::vector<std::vector<T>>& A, Compare comp = std::less<T>{});
+    void sort2(std::vector<std::vector<T>>& A, Compare comp = CompareRows<T>{});
 }
 
 namespace internal {

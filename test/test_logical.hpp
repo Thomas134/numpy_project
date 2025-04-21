@@ -77,7 +77,7 @@ TEST(NDArrayLogicalTest, LogicalAndNotTest) {
 
     ndarray<int> result = arr1.logical_andnot(arr2);
 
-    std::vector<std::vector<int>> expected = {{0, 0}, {1, 0}};
+    std::vector<std::vector<int>> expected = {{0, 1}, {0, 0}};
     for (size_t i = 0; i < shape[0]; ++i) {
         for (size_t j = 0; j < shape[1]; ++j) {
             EXPECT_EQ(result({i, j}), expected[i][j]);

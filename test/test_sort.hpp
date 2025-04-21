@@ -24,7 +24,7 @@ TEST(NDArraySortTest, SortWithCustomComparator) {
     arr.assign(data);
 
     ndarray<int> sortedArr = arr.sort(std::greater<int>{});
-
+    std::sort(data.begin(), data.end(), std::greater<int>{});
     std::vector<int> sortedData = sortedArr.data();
 
     for (size_t i = 0; i < data.size(); ++i)
