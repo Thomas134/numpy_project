@@ -1,11 +1,19 @@
 #include <gtest/gtest.h>
 #include <algorithm>
+#include <random>
 #include "../include/data_structure/ndarray.cpp"
 
 TEST(NDArraySortTest, SortWithDefaultComparator) {
-    std::vector<size_t> shape = {5};
+    std::vector<size_t> shape = {10000};
     ndarray<int> arr(shape);
-    std::vector<int> data = {5, 3, 1, 4, 2};
+    std::vector<int> data(10000);
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(1, 100);
+    for (size_t i = 0; i < data.size(); ++i) {
+        data[i] = dis(gen);
+    }
     arr.assign(data);
 
     ndarray<int> sortedArr = arr.sort(std::less<int>{});
@@ -18,9 +26,16 @@ TEST(NDArraySortTest, SortWithDefaultComparator) {
 }
 
 TEST(NDArraySortTest, SortWithCustomComparator) {
-    std::vector<size_t> shape = {5};
+    std::vector<size_t> shape = {10000};
     ndarray<int> arr(shape);
-    std::vector<int> data = {1, 2, 3, 4, 5};
+    std::vector<int> data(10000);
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(1, 100);
+    for (size_t i = 0; i < data.size(); ++i) {
+        data[i] = dis(gen);
+    }
     arr.assign(data);
 
     ndarray<int> sortedArr = arr.sort(std::greater<int>{});
@@ -30,3 +45,4 @@ TEST(NDArraySortTest, SortWithCustomComparator) {
     for (size_t i = 0; i < data.size(); ++i)
         EXPECT_EQ(sortedData[i], data[i]);
 }
+    

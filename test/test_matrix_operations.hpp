@@ -98,11 +98,20 @@ std::vector<std::vector<T>> manual_sub_2d(const std::vector<std::vector<T>>& A, 
 }
 
 TEST(NDArrayAddSubTest, OneDimensionalAddTest) {
-    std::vector<size_t> shape = {3};
+    std::vector<size_t> shape = {10000};
     ndarray<int> arrA(shape);
     ndarray<int> arrB(shape);
-    std::vector<int> dataA = {1, 2, 3};
-    std::vector<int> dataB = {4, 5, 6};
+    std::vector<int> dataA(shape[0]);
+    std::vector<int> dataB(shape[0]);
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(1, 10);
+    for (size_t i = 0; i < shape[0]; ++i) {
+        dataA[i] = dis(gen);
+        dataB[i] = dis(gen);
+    }
+
     arrA.assign(dataA);
     arrB.assign(dataB);
 
@@ -116,11 +125,20 @@ TEST(NDArrayAddSubTest, OneDimensionalAddTest) {
 }
 
 TEST(NDArrayAddSubTest, OneDimensionalSubTest) {
-    std::vector<size_t> shape = {3};
+    std::vector<size_t> shape = {1000};
     ndarray<int> arrA(shape);
     ndarray<int> arrB(shape);
-    std::vector<int> dataA = {4, 5, 6};
-    std::vector<int> dataB = {1, 2, 3};
+    std::vector<int> dataA(shape[0]);
+    std::vector<int> dataB(shape[0]);
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(1, 10);
+    for (size_t i = 0; i < shape[0]; ++i) {
+        dataA[i] = dis(gen);
+        dataB[i] = dis(gen);
+    }
+
     arrA.assign(dataA);
     arrB.assign(dataB);
 
@@ -134,11 +152,22 @@ TEST(NDArrayAddSubTest, OneDimensionalSubTest) {
 }
 
 TEST(NDArrayAddSubTest, TwoDimensionalAddTest) {
-    std::vector<size_t> shape = {2, 2};
+    std::vector<size_t> shape = {1000, 1000};
     ndarray<int> arrA(shape);
     ndarray<int> arrB(shape);
-    std::vector<std::vector<int>> dataA = {{1, 2}, {3, 4}};
-    std::vector<std::vector<int>> dataB = {{5, 6}, {7, 8}};
+    std::vector<std::vector<int>> dataA(shape[0], std::vector<int>(shape[1]));
+    std::vector<std::vector<int>> dataB(shape[0], std::vector<int>(shape[1]));
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(1, 10);
+    for (size_t i = 0; i < shape[0]; ++i) {
+        for (size_t j = 0; j < shape[1]; ++j) {
+            dataA[i][j] = dis(gen);
+            dataB[i][j] = dis(gen);
+        }
+    }
+
     arrA.assign(dataA);
     arrB.assign(dataB);
 
@@ -155,11 +184,22 @@ TEST(NDArrayAddSubTest, TwoDimensionalAddTest) {
 }
 
 TEST(NDArrayAddSubTest, TwoDimensionalSubTest) {
-    std::vector<size_t> shape = {2, 2};
+    std::vector<size_t> shape = {1000, 1000};
     ndarray<int> arrA(shape);
     ndarray<int> arrB(shape);
-    std::vector<std::vector<int>> dataA = {{5, 6}, {7, 8}};
-    std::vector<std::vector<int>> dataB = {{1, 2}, {3, 4}};
+    std::vector<std::vector<int>> dataA(shape[0], std::vector<int>(shape[1]));
+    std::vector<std::vector<int>> dataB(shape[0], std::vector<int>(shape[1]));
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(1, 10);
+    for (size_t i = 0; i < shape[0]; ++i) {
+        for (size_t j = 0; j < shape[1]; ++j) {
+            dataA[i][j] = dis(gen);
+            dataB[i][j] = dis(gen);
+        }
+    }
+
     arrA.assign(dataA);
     arrB.assign(dataB);
 
@@ -208,16 +248,26 @@ std::vector<std::vector<T>> manual_transpose(const std::vector<std::vector<T>>& 
 }
 
 TEST(NDArrayTest, TransposeTwoDimensionalTest) {
-    std::vector<size_t> shape = {2, 3};
+    std::vector<size_t> shape = {1000, 1000};
     ndarray<int> arr(shape);
-    std::vector<std::vector<int>> data = {{1, 2, 3}, {4, 5, 6}};
+    std::vector<std::vector<int>> data(shape[0], std::vector<int>(shape[1]));
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(1, 100);
+    for (size_t i = 0; i < shape[0]; ++i) {
+        for (size_t j = 0; j < shape[1]; ++j) {
+            data[i][j] = dis(gen);
+        }
+    }
+
     arr.assign(data);
 
     try {
         ndarray<int> result = arr.transpose();
 
         std::vector<std::vector<int>> expected = manual_transpose(data);
-        std::vector<size_t> expected_shape = {3, 2};
+        std::vector<size_t> expected_shape = {shape[1], shape[0]};
 
         EXPECT_EQ(result.shape(), expected_shape);
 

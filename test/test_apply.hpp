@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <random>
 #include "../include/data_structure/ndarray.cpp"
 
 template <typename T>
@@ -12,9 +13,16 @@ T add_one(T x) {
 }
 
 TEST(NDArrayApplyTest, Apply1DTest) {
-    std::vector<size_t> shape = {3};
+    std::vector<size_t> shape = {10000};
     ndarray<int> arr(shape);
-    std::vector<int> data = {1, 2, 3};
+    std::vector<int> data(10000);
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(1, 100);
+    for (size_t i = 0; i < data.size(); ++i) {
+        data[i] = dis(gen);
+    }
     arr.assign(data);
 
     auto result1 = arr.apply(multiply_by_two<int>);
@@ -33,9 +41,18 @@ TEST(NDArrayApplyTest, Apply1DTest) {
 }
 
 TEST(NDArrayApplyTest, Apply2DTest) {
-    std::vector<size_t> shape = {2, 2};
+    std::vector<size_t> shape = {1000, 1000};
     ndarray<int> arr(shape);
-    std::vector<std::vector<int>> data = {{1, 2}, {3, 4}};
+    std::vector<std::vector<int>> data(1000, std::vector<int>(1000));
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(1, 100);
+    for (auto& row : data) {
+        for (int& value : row) {
+            value = dis(gen);
+        }
+    }
     arr.assign(data);
 
     auto result1 = arr.apply(multiply_by_two<int>);
@@ -58,3 +75,4 @@ TEST(NDArrayApplyTest, Apply2DTest) {
         }
     }
 }
+    
