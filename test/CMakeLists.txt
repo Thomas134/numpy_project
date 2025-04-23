@@ -25,4 +25,3 @@ target_link_libraries(run_all_tests ${GTEST_LIBRARIES} ${BLAS_LIBRARIES})
 
 target_link_libraries(run_all_tests numpycpp)
 
-enable_testing()

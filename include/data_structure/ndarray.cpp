@@ -168,6 +168,38 @@ ndarray<T> ndarray<T>::func_name(Compare comp) { \
     throw std::invalid_argument("Unsupported array dimension."); \
 }
 
+#define NDARRAY_ARITH_FUNC(func_name, op_1d, op_2d) \
+template <typename T> \
+ndarray<T> ndarray<T>::func_name(const ndarray<T>& other) { \
+    if (__shape != other.__shape) \
+        throw std::invalid_argument("Shapes of the two ndarrays do not match."); \
+    if (__shape.size() == 1) { \
+        std::vector<T> result = op_1d(__data, other.__data); \
+        ndarray<T> result_ndarray(__shape); \
+        for (size_t i = 0; i < result.size(); ++i) \
+            result_ndarray.__data[i] = result[i]; \
+        return result_ndarray; \
+    } else if (__shape.size() == 2) { \
+        std::vector<std::vector<T>> A_2d(__shape[0], std::vector<T>(__shape[1])); \
+        std::vector<std::vector<T>> B_2d(__shape[0], std::vector<T>(__shape[1])); \
+        for (size_t i = 0; i < __shape[0]; ++i) { \
+            for (size_t j = 0; j < __shape[1]; ++j) { \
+                A_2d[i][j] = __data[calculate_offset(i, j)]; \
+                B_2d[i][j] = other.__data[other.calculate_offset(i, j)]; \
+            } \
+        } \
+        std::vector<std::vector<T>> result_2d = op_2d(A_2d, B_2d); \
+        ndarray<T> result_ndarray(__shape); \
+        for (size_t i = 0; i < __shape[0]; ++i) { \
+            for (size_t j = 0; j < __shape[1]; ++j) { \
+                result_ndarray.__data[result_ndarray.calculate_offset(i, j)] = result_2d[i][j]; \
+            } \
+        } \
+        return result_ndarray; \
+    } \
+    throw std::invalid_argument("Unsupported array dimension."); \
+}
+
 template <typename T>
 class ndarray {
 private:
@@ -585,77 +617,9 @@ ndarray<T> ndarray<T>::dot(const ndarray<T>& other) {
     return result_ndarray;
 }
 
-template <typename T>
-ndarray<T> ndarray<T>::add(const ndarray<T>& other) {
-    if (__shape != other.__shape)
-        throw std::invalid_argument("Shapes of the two ndarrays do not match.");
+NDARRAY_ARITH_FUNC(add, internal::add1, internal::add2)
 
-    if (__shape.size() == 1) {
-        std::vector<T> result = internal::add1(__data, other.__data);
-        ndarray<T> result_ndarray(__shape);
-        for (size_t i = 0; i < result.size(); ++i)
-            result_ndarray.__data[i] = result[i];
-
-        return result_ndarray;
-    } else if (__shape.size() == 2) {
-        std::vector<std::vector<T>> A_2d(__shape[0], std::vector<T>(__shape[1]));
-        std::vector<std::vector<T>> B_2d(__shape[0], std::vector<T>(__shape[1]));
-
-        for (size_t i = 0; i < __shape[0]; ++i) {
-            for (size_t j = 0; j < __shape[1]; ++j) {
-                A_2d[i][j] = __data[calculate_offset(i, j)];
-                B_2d[i][j] = other.__data[other.calculate_offset(i, j)];
-            }
-        }
-
-        std::vector<std::vector<T>> result_2d = internal::add2(A_2d, B_2d);
-        ndarray<T> result_ndarray(__shape);
-
-        for (size_t i = 0; i < __shape[0]; ++i)
-            for (size_t j = 0; j < __shape[1]; ++j)
-                result_ndarray.__data[result_ndarray.calculate_offset(i, j)] = result_2d[i][j];
-
-        return result_ndarray;
-    }
-
-    throw std::invalid_argument("Unsupported array dimension.");
-}
-
-template <typename T>
-ndarray<T> ndarray<T>::sub(const ndarray<T>& other) {
-    if (__shape != other.__shape)
-        throw std::invalid_argument("Shapes of the two ndarrays do not match.");
-
-    if (__shape.size() == 1) {
-        std::vector<T> result = internal::subtract1(__data, other.__data);
-        ndarray<T> result_ndarray(__shape);
-        for (size_t i = 0; i < result.size(); ++i)
-            result_ndarray.__data[i] = result[i];
-
-        return result_ndarray;
-    } else if (__shape.size() == 2) {
-        std::vector<std::vector<T>> A_2d(__shape[0], std::vector<T>(__shape[1]));
-        std::vector<std::vector<T>> B_2d(__shape[0], std::vector<T>(__shape[1]));
-
-        for (size_t i = 0; i < __shape[0]; ++i) {
-            for (size_t j = 0; j < __shape[1]; ++j) {
-                A_2d[i][j] = __data[calculate_offset(i, j)];
-                B_2d[i][j] = other.__data[other.calculate_offset(i, j)];
-            }
-        }
-
-        std::vector<std::vector<T>> result_2d = internal::subtract2(A_2d, B_2d);
-        ndarray<T> result_ndarray(__shape);
-
-        for (size_t i = 0; i < __shape[0]; ++i)
-            for (size_t j = 0; j < __shape[1]; ++j)
-                result_ndarray.__data[result_ndarray.calculate_offset(i, j)] = result_2d[i][j];
-
-        return result_ndarray;
-    }
-
-    throw std::invalid_argument("Unsupported array dimension.");
-}
+NDARRAY_ARITH_FUNC(sub, internal::subtract1, internal::subtract2)
 
 template <typename T>
 ndarray<T> ndarray<T>::transpose() {
