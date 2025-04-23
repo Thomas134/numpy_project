@@ -1,6 +1,6 @@
 project('numpy_project', 'cpp',
   version : '1.0',
-  default_options : ['cpp_std=c++17', 'cpp_args=-mavx2 -fopenmp']
+  default_options : ['cpp_std=c++17', 'cpp_args=-mavx2 -fopenmp -O2']
 )
 
 blas_dep = dependency('blas', required : true)
@@ -52,3 +52,5 @@ install_headers('include/data_structure/dtype_trait.cpp',
   'include/data_structure/ndarray.cpp', 
   subdir : 'numpy/data_structure'
 )
+
+subdir('test')

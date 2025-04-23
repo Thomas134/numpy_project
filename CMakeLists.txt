@@ -53,6 +53,6 @@ install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/
     FILES_MATCHING PATTERN "*.cpp"
 )
 
-add_definitions(-mavx2 -fopenmp)
+add_definitions(-mavx2 -fopenmp -O2)
 
 add_subdirectory(test)
