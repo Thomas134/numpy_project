@@ -20,13 +20,15 @@ TEST(NDArrayLogicalTest, LogicalAndTest) {
             data2[i][j] = dis(gen);
         }
     }
-
+    
     arr1.assign(data1);
     arr2.assign(data2);
-
+    
     ndarray<int> result = arr1.logical_and(arr2);
-
+    
     std::vector<std::vector<int>> expected(1000, std::vector<int>(1000));
+
+    // #pragma omp simd
     for (size_t i = 0; i < shape[0]; ++i) {
         for (size_t j = 0; j < shape[1]; ++j) {
             expected[i][j] = data1[i][j] && data2[i][j];
@@ -53,13 +55,15 @@ TEST(NDArrayLogicalTest, LogicalOrTest) {
             data2[i][j] = dis(gen);
         }
     }
-
+    
     arr1.assign(data1);
     arr2.assign(data2);
-
+    
     ndarray<int> result = arr1.logical_or(arr2);
-
+    
     std::vector<std::vector<int>> expected(1000, std::vector<int>(1000));
+
+    // #pragma omp simd
     for (size_t i = 0; i < shape[0]; ++i) {
         for (size_t j = 0; j < shape[1]; ++j) {
             expected[i][j] = data1[i][j] || data2[i][j];
@@ -75,24 +79,26 @@ TEST(NDArrayLogicalTest, LogicalXorTest) {
 
     std::vector<std::vector<int>> data1(1000, std::vector<int>(1000));
     std::vector<std::vector<int>> data2(1000, std::vector<int>(1000));
-
+    
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> dis(0, 1);
-
+    
     for (size_t i = 0; i < shape[0]; ++i) {
         for (size_t j = 0; j < shape[1]; ++j) {
             data1[i][j] = dis(gen);
             data2[i][j] = dis(gen);
         }
     }
-
+    
     arr1.assign(data1);
     arr2.assign(data2);
-
+    
     ndarray<int> result = arr1.logical_xor(arr2);
-
+    
     std::vector<std::vector<int>> expected(1000, std::vector<int>(1000));
+    
+    // #pragma omp simd
     for (size_t i = 0; i < shape[0]; ++i) {
         for (size_t j = 0; j < shape[1]; ++j) {
             expected[i][j] = (data1[i][j] && !data2[i][j]) || (!data1[i][j] && data2[i][j]);
@@ -119,13 +125,15 @@ TEST(NDArrayLogicalTest, LogicalAndNotTest) {
             data2[i][j] = dis(gen);
         }
     }
-
+    
     arr1.assign(data1);
     arr2.assign(data2);
-
+    
     ndarray<int> result = arr1.logical_andnot(arr2);
-
+    
     std::vector<std::vector<int>> expected(1000, std::vector<int>(1000));
+
+    // #pragma omp simd
     for (size_t i = 0; i < shape[0]; ++i) {
         for (size_t j = 0; j < shape[1]; ++j) {
             expected[i][j] = !data1[i][j] && data2[i][j];

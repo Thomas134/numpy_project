@@ -1,6 +1,6 @@
 project('numpy_project', 'cpp',
   version : '1.0',
-  default_options : ['cpp_std=c++17', 'cpp_args=-mavx2 -fopenmp -O2']
+  default_options : ['cpp_std=c++17', 'cpp_args=-mavx2 -fopenmp -O3']
 )
 
 blas_dep = dependency('blas', required : true)

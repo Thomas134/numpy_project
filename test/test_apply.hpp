@@ -20,6 +20,7 @@ TEST(NDArrayApplyTest, Apply1DTest) {
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> dis(1, 100);
+    
     for (size_t i = 0; i < data.size(); ++i) {
         data[i] = dis(gen);
     }
@@ -27,6 +28,8 @@ TEST(NDArrayApplyTest, Apply1DTest) {
 
     auto result1 = arr.apply(multiply_by_two<int>);
     std::vector<int> resultData1 = result1.data();
+
+    // #pragma omp simd
     for (size_t i = 0; i < data.size(); ++i) {
         int expected = multiply_by_two(data[i]);
         EXPECT_EQ(resultData1[i], expected);
@@ -34,6 +37,8 @@ TEST(NDArrayApplyTest, Apply1DTest) {
 
     auto result2 = arr.apply(add_one<int>);
     std::vector<int> resultData2 = result2.data();
+
+    // #pragma omp simd
     for (size_t i = 0; i < data.size(); ++i) {
         int expected = add_one(data[i]);
         EXPECT_EQ(resultData2[i], expected);
@@ -48,6 +53,7 @@ TEST(NDArrayApplyTest, Apply2DTest) {
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> dis(1, 100);
+
     for (auto& row : data) {
         for (int& value : row) {
             value = dis(gen);

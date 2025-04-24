@@ -11,6 +11,7 @@
 #include <stdexcept>
 #include <cmath>
 #include <numeric>
+#include <omp.h>
 
 #include "dtype_trait.cpp"
 

@@ -107,18 +107,20 @@ TEST(NDArrayAddSubTest, OneDimensionalAddTest) {
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> dis(1, 10);
+
     for (size_t i = 0; i < shape[0]; ++i) {
         dataA[i] = dis(gen);
         dataB[i] = dis(gen);
     }
-
+    
     arrA.assign(dataA);
     arrB.assign(dataB);
-
+    
     ndarray<int> result = arrA.add(arrB);
     std::vector<int> expected = manual_add_1d(dataA, dataB);
-
+    
     std::vector<int> resultData = result.data();
+    // #pragma omp simd
     for (size_t i = 0; i < expected.size(); ++i) {
         EXPECT_EQ(resultData[i], expected[i]);
     }
@@ -134,18 +136,20 @@ TEST(NDArrayAddSubTest, OneDimensionalSubTest) {
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> dis(1, 10);
+
     for (size_t i = 0; i < shape[0]; ++i) {
         dataA[i] = dis(gen);
         dataB[i] = dis(gen);
     }
-
+    
     arrA.assign(dataA);
     arrB.assign(dataB);
-
+    
     ndarray<int> result = arrA.sub(arrB);
     std::vector<int> expected = manual_sub_1d(dataA, dataB);
-
+    
     std::vector<int> resultData = result.data();
+    // #pragma omp simd
     for (size_t i = 0; i < expected.size(); ++i) {
         EXPECT_EQ(resultData[i], expected[i]);
     }
@@ -161,6 +165,7 @@ TEST(NDArrayAddSubTest, TwoDimensionalAddTest) {
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> dis(1, 10);
+
     for (size_t i = 0; i < shape[0]; ++i) {
         for (size_t j = 0; j < shape[1]; ++j) {
             dataA[i][j] = dis(gen);
@@ -193,6 +198,7 @@ TEST(NDArrayAddSubTest, TwoDimensionalSubTest) {
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> dis(1, 10);
+
     for (size_t i = 0; i < shape[0]; ++i) {
         for (size_t j = 0; j < shape[1]; ++j) {
             dataA[i][j] = dis(gen);
@@ -239,6 +245,8 @@ std::vector<std::vector<T>> manual_transpose(const std::vector<std::vector<T>>& 
     const size_t rows = mat.size();
     const size_t cols = mat[0].size();
     std::vector<std::vector<T>> result(cols, std::vector<T>(rows));
+
+    // #pragma omp simd
     for (size_t i = 0; i < rows; ++i) {
         for (size_t j = 0; j < cols; ++j) {
             result[j][i] = mat[i][j];
@@ -255,6 +263,7 @@ TEST(NDArrayTest, TransposeTwoDimensionalTest) {
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> dis(1, 100);
+
     for (size_t i = 0; i < shape[0]; ++i) {
         for (size_t j = 0; j < shape[1]; ++j) {
             data[i][j] = dis(gen);
@@ -271,6 +280,7 @@ TEST(NDArrayTest, TransposeTwoDimensionalTest) {
 
         EXPECT_EQ(result.shape(), expected_shape);
 
+        // #pragma omp simd
         for (size_t i = 0; i < expected_shape[0]; ++i) {
             for (size_t j = 0; j < expected_shape[1]; ++j) {
                 std::vector<size_t> indices = {i, j};
