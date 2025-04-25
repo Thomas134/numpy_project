@@ -22,28 +22,16 @@
 #include "../sort.cpp"
 #include "../matrix_operations.cpp"
 
-#define NDARRAY_UNARY_FUNC(func_name, simd_func_1d, simd_func_2d) \
+#define NDARRAY_UNARY_FUNC(func_name, simd_func_1d) \
 template <typename T> \
 ndarray<T> ndarray<T>::func_name() { \
-    if (__shape.size() == 1) { \
-        std::vector<T> result = simd_func_1d(__data); \
-        ndarray<T> result_ndarray(__shape); \
-        for (size_t i = 0; i < result.size(); ++i) \
-            result_ndarray.__data[i] = result[i]; \
-        return result_ndarray; \
-    } else if (__shape.size() == 2) { \
-        std::vector<std::vector<T>> A_2d(__shape[0], std::vector<T>(__shape[1])); \
-        for (size_t i = 0; i < __shape[0]; ++i) \
-            for (size_t j = 0; j < __shape[1]; ++j) \
-                A_2d[i][j] = __data[calculate_offset(i, j)]; \
-        std::vector<std::vector<T>> result_2d = simd_func_2d(A_2d); \
-        ndarray<T> result_ndarray(__shape); \
-        for (size_t i = 0; i < __shape[0]; ++i) \
-            for (size_t j = 0; j < __shape[1]; ++j) \
-                result_ndarray.__data[calculate_offset(i, j)] = result_2d[i][j]; \
-        return result_ndarray; \
-    } \
-    throw std::invalid_argument("Unsupported array dimension."); \
+    if (__shape.size() != 1 && __shape.size() != 2) \
+        throw std::invalid_argument("Unsupported array dimension."); \
+    std::vector<T> result = simd_func_1d(__data); \
+    ndarray<T> result_ndarray(__shape); \
+    for (size_t i = 0; i < result.size(); ++i) \
+        result_ndarray.__data[i] = result[i]; \
+    return result_ndarray; \
 }
 
 #define NDARRAY_BINARY_FUNC(func_name, simd_1d_func, simd_2d_func) \
@@ -169,36 +157,18 @@ ndarray<T> ndarray<T>::func_name(Compare comp) { \
     throw std::invalid_argument("Unsupported array dimension."); \
 }
 
-#define NDARRAY_ARITH_FUNC(func_name, op_1d, op_2d) \
+#define NDARRAY_ARITH_FUNC(func_name, op_1d) \
 template <typename T> \
 ndarray<T> ndarray<T>::func_name(const ndarray<T>& other) { \
     if (__shape != other.__shape) \
         throw std::invalid_argument("Shapes of the two ndarrays do not match."); \
-    if (__shape.size() == 1) { \
-        std::vector<T> result = op_1d(__data, other.__data); \
-        ndarray<T> result_ndarray(__shape); \
-        for (size_t i = 0; i < result.size(); ++i) \
-            result_ndarray.__data[i] = result[i]; \
-        return result_ndarray; \
-    } else if (__shape.size() == 2) { \
-        std::vector<std::vector<T>> A_2d(__shape[0], std::vector<T>(__shape[1])); \
-        std::vector<std::vector<T>> B_2d(__shape[0], std::vector<T>(__shape[1])); \
-        for (size_t i = 0; i < __shape[0]; ++i) { \
-            for (size_t j = 0; j < __shape[1]; ++j) { \
-                A_2d[i][j] = __data[calculate_offset(i, j)]; \
-                B_2d[i][j] = other.__data[other.calculate_offset(i, j)]; \
-            } \
-        } \
-        std::vector<std::vector<T>> result_2d = op_2d(A_2d, B_2d); \
-        ndarray<T> result_ndarray(__shape); \
-        for (size_t i = 0; i < __shape[0]; ++i) { \
-            for (size_t j = 0; j < __shape[1]; ++j) { \
-                result_ndarray.__data[result_ndarray.calculate_offset(i, j)] = result_2d[i][j]; \
-            } \
-        } \
-        return result_ndarray; \
-    } \
-    throw std::invalid_argument("Unsupported array dimension."); \
+    if (__shape.size() != 1 && __shape.size() != 2) \
+        throw std::invalid_argument("Unsupported array dimension."); \
+    std::vector<T> result = op_1d(__data, other.__data); \
+    ndarray<T> result_ndarray(__shape); \
+    for (size_t i = 0; i < result.size(); ++i) \
+        result_ndarray.__data[i] = result[i]; \
+    return result_ndarray; \
 }
 
 template <typename T>
@@ -534,37 +504,37 @@ NDARRAY_BINARY_FUNC(min, internal::min1_simd, internal::min2_simd);
 
 NDARRAY_BINARY_FUNC(max, internal::max1_simd, internal::max2_simd);
     
-NDARRAY_UNARY_FUNC(sqrt, internal::sqrt1_simd, internal::sqrt2_simd);
+NDARRAY_UNARY_FUNC(sqrt, internal::sqrt1_simd);
 
-NDARRAY_UNARY_FUNC(rsqrt, internal::rsqrt1_simd, internal::rsqrt2_simd);
+NDARRAY_UNARY_FUNC(rsqrt, internal::rsqrt1_simd);
 
-NDARRAY_UNARY_FUNC(round, internal::round1_simd, internal::round2_simd);
+NDARRAY_UNARY_FUNC(round, internal::round1_simd);
 
-NDARRAY_UNARY_FUNC(ceil, internal::ceil1_simd, internal::ceil2_simd);
+NDARRAY_UNARY_FUNC(ceil, internal::ceil1_simd);
 
-NDARRAY_UNARY_FUNC(floor, internal::floor1_simd, internal::floor2_simd);
+NDARRAY_UNARY_FUNC(floor, internal::floor1_simd);
 
-NDARRAY_UNARY_FUNC(abs, internal::abs1_simd, internal::abs2_simd);
+NDARRAY_UNARY_FUNC(abs, internal::abs1_simd);
 
-NDARRAY_UNARY_FUNC(log, internal::log_1_simd, internal::log_2_simd);
+NDARRAY_UNARY_FUNC(log, internal::log_1_simd);
 
-NDARRAY_UNARY_FUNC(log2, internal::log2_1_simd, internal::log2_2_simd);
+NDARRAY_UNARY_FUNC(log2, internal::log2_1_simd);
 
-NDARRAY_UNARY_FUNC(log10, internal::log10_1_simd, internal::log10_2_simd);
+NDARRAY_UNARY_FUNC(log10, internal::log10_1_simd);
 
-NDARRAY_UNARY_FUNC(sin, internal::sin1_simd, internal::sin2_simd);
+NDARRAY_UNARY_FUNC(sin, internal::sin1_simd);
 
-NDARRAY_UNARY_FUNC(cos, internal::cos1_simd, internal::cos2_simd);
+NDARRAY_UNARY_FUNC(cos, internal::cos1_simd);
 
-NDARRAY_UNARY_FUNC(sincos, internal::sincos1_simd, internal::sincos2_simd);
+NDARRAY_UNARY_FUNC(sincos, internal::sincos1_simd);
 
-NDARRAY_UNARY_FUNC(tan, internal::tan1_simd, internal::tan2_simd);
+NDARRAY_UNARY_FUNC(tan, internal::tan1_simd);
 
-NDARRAY_UNARY_FUNC(asin, internal::asin1_simd, internal::asin2_simd);
+NDARRAY_UNARY_FUNC(asin, internal::asin1_simd);
 
-NDARRAY_UNARY_FUNC(acos, internal::acos1_simd, internal::acos2_simd);
+NDARRAY_UNARY_FUNC(acos, internal::acos1_simd);
 
-NDARRAY_UNARY_FUNC(atan, internal::atan1_simd, internal::atan2_simd);
+NDARRAY_UNARY_FUNC(atan, internal::atan1_simd);
 
 
 // parallel functions
@@ -618,9 +588,9 @@ ndarray<T> ndarray<T>::dot(const ndarray<T>& other) {
     return result_ndarray;
 }
 
-NDARRAY_ARITH_FUNC(add, internal::add1, internal::add2)
+NDARRAY_ARITH_FUNC(add, internal::add1)
 
-NDARRAY_ARITH_FUNC(sub, internal::subtract1, internal::subtract2)
+NDARRAY_ARITH_FUNC(sub, internal::subtract1)
 
 template <typename T>
 ndarray<T> ndarray<T>::transpose() {
