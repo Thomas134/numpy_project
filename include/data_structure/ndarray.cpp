@@ -34,36 +34,18 @@ ndarray<T> ndarray<T>::func_name() { \
     return result_ndarray; \
 }
 
-#define NDARRAY_BINARY_FUNC(func_name, simd_1d_func, simd_2d_func) \
+#define NDARRAY_BINARY_FUNC(func_name, simd_1d_func) \
 template <typename T> \
 ndarray<T> ndarray<T>::func_name(const ndarray<T>& other) { \
     if (__shape != other.__shape) \
         throw std::invalid_argument("Shapes of the two ndarrays do not match."); \
-    if (__shape.size() == 1) { \
-        std::vector<T> result = simd_1d_func(__data, other.__data); \
-        ndarray<T> result_ndarray(__shape); \
-        for (size_t i = 0; i < result.size(); ++i) \
-            result_ndarray.__data[i] = result[i]; \
-        return result_ndarray; \
-    } else if (__shape.size() == 2) { \
-        std::vector<std::vector<T>> A_2d(__shape[0], std::vector<T>(__shape[1])); \
-        std::vector<std::vector<T>> B_2d(__shape[0], std::vector<T>(__shape[1])); \
-        for (size_t i = 0; i < __shape[0]; ++i) { \
-            for (size_t j = 0; j < __shape[1]; ++j) { \
-                A_2d[i][j] = __data[calculate_offset(i, j)]; \
-                B_2d[i][j] = other.__data[other.calculate_offset(i, j)]; \
-            } \
-        } \
-        std::vector<std::vector<T>> result_2d = simd_2d_func(A_2d, B_2d); \
-        ndarray<T> result_ndarray(__shape); \
-        for (size_t i = 0; i < __shape[0]; ++i) { \
-            for (size_t j = 0; j < __shape[1]; ++j) { \
-                result_ndarray.__data[calculate_offset(i, j)] = result_2d[i][j]; \
-            } \
-        } \
-        return result_ndarray; \
-    } \
-    throw std::invalid_argument("Unsupported array dimension."); \
+    if (__shape.size() != 1 && __shape.size() != 2) \
+        throw std::invalid_argument("Unsupported array dimension."); \
+    std::vector<T> result = simd_1d_func(__data, other.__data); \
+    ndarray<T> result_ndarray(__shape); \
+    for (size_t i = 0; i < result.size(); ++i) \
+        result_ndarray.__data[i] = result[i]; \
+    return result_ndarray; \
 }
 
 #define NDARRAY_APPLY_FUNC(func_name, apply_1d, apply_2d) \
@@ -97,33 +79,17 @@ ndarray<T> ndarray<T>::func_name(Func func) { \
     throw std::invalid_argument("Unsupported array dimension."); \
 }
 
-#define NDARRAY_SHIFT_FUNC(func_name, simd_func_1d, simd_func_2d) \
+#define NDARRAY_SHIFT_FUNC(func_name, simd_func_1d) \
 template <typename T> \
 ndarray<T> ndarray<T>::func_name(const int imm) { \
-    if (__shape.size() == 1) { \
-        std::vector<T> result = simd_func_1d(__data, imm); \
-        ndarray<T> result_ndarray(__shape); \
-        for (size_t i = 0; i < result.size(); ++i) { \
-            result_ndarray.__data[i] = result[i]; \
-        } \
-        return result_ndarray; \
-    } else if (__shape.size() == 2) { \
-        std::vector<std::vector<T>> A_2d(__shape[0], std::vector<T>(__shape[1])); \
-        for (size_t i = 0; i < __shape[0]; ++i) { \
-            for (size_t j = 0; j < __shape[1]; ++j) { \
-                A_2d[i][j] = __data[calculate_offset(i, j)]; \
-            } \
-        } \
-        std::vector<std::vector<T>> result_2d = simd_func_2d(A_2d, imm); \
-        ndarray<T> result_ndarray(__shape); \
-        for (size_t i = 0; i < __shape[0]; ++i) { \
-            for (size_t j = 0; j < __shape[1]; ++j) { \
-                result_ndarray.__data[calculate_offset(i, j)] = result_2d[i][j]; \
-            } \
-        } \
-        return result_ndarray; \
+    if (__shape.size() != 1 && __shape.size() != 2) \
+        throw std::invalid_argument("Unsupported array dimension."); \
+    std::vector<T> result = simd_func_1d(__data, imm); \
+    ndarray<T> result_ndarray(__shape); \
+    for (size_t i = 0; i < result.size(); ++i) { \
+        result_ndarray.__data[i] = result[i]; \
     } \
-    throw std::invalid_argument("Unsupported array dimension."); \
+    return result_ndarray; \
 }
 
 #define NDARRAY_SORT_FUNC(func_name, sort_1d_func, sort_2d_func) \
@@ -490,19 +456,19 @@ std::vector<uint8_t> ndarray<T>::all(int axis) const {
 
 
 // logical functions
-NDARRAY_BINARY_FUNC(logical_and, internal::and1_simd, internal::and2_simd);
+NDARRAY_BINARY_FUNC(logical_and, internal::and1_simd);
 
-NDARRAY_BINARY_FUNC(logical_or, internal::or1_simd, internal::or2_simd);
+NDARRAY_BINARY_FUNC(logical_or, internal::or1_simd);
 
-NDARRAY_BINARY_FUNC(logical_xor, internal::xor1_simd, internal::xor2_simd);
+NDARRAY_BINARY_FUNC(logical_xor, internal::xor1_simd);
 
-NDARRAY_BINARY_FUNC(logical_andnot, internal::andnot1_simd, internal::andnot2_simd);
+NDARRAY_BINARY_FUNC(logical_andnot, internal::andnot1_simd);
 
 
 // math functions
-NDARRAY_BINARY_FUNC(min, internal::min1_simd, internal::min2_simd);
+NDARRAY_BINARY_FUNC(min, internal::min1_simd);
 
-NDARRAY_BINARY_FUNC(max, internal::max1_simd, internal::max2_simd);
+NDARRAY_BINARY_FUNC(max, internal::max1_simd);
     
 NDARRAY_UNARY_FUNC(sqrt, internal::sqrt1_simd);
 
@@ -546,9 +512,9 @@ NDARRAY_SORT_FUNC(sort, internal::sort1, internal::sort2);
 
 
 // shift functions
-NDARRAY_SHIFT_FUNC(slli, internal::slli1_simd, internal::slli2_simd);
+NDARRAY_SHIFT_FUNC(slli, internal::slli1_simd);
 
-NDARRAY_SHIFT_FUNC(srli, internal::srli1_simd, internal::srli2_simd);
+NDARRAY_SHIFT_FUNC(srli, internal::srli1_simd);
 
 
 // matrix operations
