@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.28)
+cmake_minimum_required(VERSION 3.27)
 
 project(numpy_project)
 
@@ -12,11 +12,13 @@ else()
     message(FATAL_ERROR "BLAS library not found.")
 endif()
 
-find_package(xsimd REQUIRED)
-if(xsimd_FOUND)
-    message(STATUS "xsimd directory found: ${xsimd_DIR}")
-else()
-    message(FATAL_ERROR "xsimd directory not found.")
+if(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64|AMD64|i386|i686")
+    find_package(xsimd REQUIRED)
+    if(xsimd_FOUND)
+        message(STATUS "xsimd directory found: ${xsimd_DIR}")
+    else()
+        message(FATAL_ERROR "xsimd directory not found.")
+    endif()
 endif()
 
 find_package(OpenMP REQUIRED)
@@ -53,6 +55,10 @@ install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/
     FILES_MATCHING PATTERN "*.cpp"
 )
 
-add_definitions(-mavx2 -fopenmp -O3)
+if(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64|AMD64|i386|i686")
+    add_definitions(-mavx2 -fopenmp -O3)
+elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "riscv64")
+    add_definitions(-fopenmp -march=rv64gcv -O3)
+endif()
 
 add_subdirectory(test)

@@ -6,7 +6,9 @@
 #include "simd_traits.cpp"
 #include "utils/utils.cpp"
 #include "utils/simd_operators.cpp"
-#include <immintrin.h>
+#ifdef __AVX2__
+    #include <immintrin.h>
+#endif
 #include <stdexcept>
 
 namespace internal {
@@ -43,7 +45,13 @@ namespace internal {
         if (A.size() < 32)
             return apply_unary_op_plain(A, [imm8](const T& element) { return element << imm8; }); 
 
-        return apply_unary_op_simd_shift<T, slli_simd_traits<T>>(A, imm8, [imm8](const T& element) { return element << imm8; });
+        #ifdef __riscv
+            return apply_unary_op_plain(A, [imm8](const T& element) { return element << imm8; }); 
+        #endif
+
+        #ifdef __AVX2__
+            return apply_unary_op_simd_shift<T, slli_simd_traits<T>>(A, imm8, [imm8](const T& element) { return element << imm8; });
+        #endif
     }
 
 
@@ -53,12 +61,19 @@ namespace internal {
         if (A.size() < 32)
             return apply_unary_op_plain(A, [imm8](const T& element) { return element >> imm8; });
 
-        return apply_unary_op_simd_shift<T, srli_simd_traits<T>>(A, imm8, [imm8](const T& element) { return element >> imm8; });
+        #ifdef __riscv
+            return apply_unary_op_plain(A, [imm8](const T& element) { return element >> imm8; });
+        #endif
+
+        #ifdef __AVX2__
+            return apply_unary_op_simd_shift<T, srli_simd_traits<T>>(A, imm8, [imm8](const T& element) { return element >> imm8; });
+        #endif
     }
 
 
     // ========================== 2D =============================
 
+    #ifdef __AVX2__
     // slli2_simd
     template <typename T>
     std::vector<std::vector<T>> slli2_simd(const std::vector<std::vector<T>>& A, const int imm8) {
@@ -71,6 +86,8 @@ namespace internal {
     std::vector<std::vector<T>> srli2_simd(const std::vector<std::vector<T>>& A, const int imm8) {
         return apply_unary_op_shift(A, imm8, srli1_simd<T>);
     }
+
+    #endif
 }
 
 

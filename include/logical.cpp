@@ -5,8 +5,10 @@
 #include "simd_traits.cpp"
 #include "utils/utils.cpp"
 #include "utils/simd_operators.cpp"
-#include <immintrin.h>
-#include <stdexcept>
+#ifdef __AVX2__
+    #include <immintrin.h>
+#endif
+    #include <stdexcept>
 
 namespace internal {
     // =========================== 1D ======================================
@@ -67,7 +69,13 @@ namespace internal {
         if (A.size() < 32)
             return apply_binary_op_plain(A, B, [](const T& element1, const T& element2) { return element1 & element2; });
 
-        return apply_binary_op_simd<T, and_simd_traits<T>>(A, B, [](const T& element1, const T& element2) { return element1 & element2; });
+        #ifdef __riscv
+            return apply_binary_op_plain(A, B, [](const T& element1, const T& element2) { return element1 & element2; });
+        #endif
+        
+        #ifdef __AVX2__
+            return apply_binary_op_simd<T, and_simd_traits<T>>(A, B, [](const T& element1, const T& element2) { return element1 & element2; });
+        #endif
     }
 
 
@@ -77,7 +85,13 @@ namespace internal {
         if (A.size() < 32)
             return apply_binary_op_plain(A, B, [](const T& element1, const T& element2) { return element1 | element2; });
 
-        return apply_binary_op_simd<T, or_simd_traits<T>>(A, B, [](const T& element1, const T& element2) { return element1 | element2; });
+        #ifdef __riscv
+            return apply_binary_op_plain(A, B, [](const T& element1, const T& element2) { return element1 | element2; });
+        #endif
+
+        #ifdef __AVX2__
+            return apply_binary_op_simd<T, or_simd_traits<T>>(A, B, [](const T& element1, const T& element2) { return element1 | element2; });
+        #endif
     }
 
 
@@ -87,7 +101,13 @@ namespace internal {
         if (A.size() < 32)
             return apply_binary_op_plain(A, B, [](const T& element1, const T& element2) { return element1 ^ element2; });
 
-        return apply_binary_op_simd<T, xor_simd_traits<T>>(A, B, [](const T& element1, const T& element2) { return element1 ^ element2; });
+        #ifdef __riscv
+            return apply_binary_op_plain(A, B, [](const T& element1, const T& element2) { return element1 ^ element2; });
+        #endif
+
+        #ifdef __AVX2__
+            return apply_binary_op_simd<T, xor_simd_traits<T>>(A, B, [](const T& element1, const T& element2) { return element1 ^ element2; });
+        #endif
     }
 
 
@@ -97,10 +117,17 @@ namespace internal {
         if (A.size() < 32)
             return apply_binary_op_plain(A, B, [](const T& element1, const T& element2) { return ~element1 & element2; });
 
-        return apply_binary_op_simd<T, andnot_simd_traits<T>>(A, B, [](const T& element1, const T& element2) { return ~element1 & element2; });
+        #ifdef __riscv
+            return apply_binary_op_plain(A, B, [](const T& element1, const T& element2) { return ~element1 & element2; });
+        #endif
+
+        #ifdef __AVX2__ 
+            return apply_binary_op_simd<T, andnot_simd_traits<T>>(A, B, [](const T& element1, const T& element2) { return ~element1 & element2; });
+        #endif
     }
 
 
+    #ifdef __AVX2__
     // testc1_simd
     template <typename T>
     int testc1_simd(const std::vector<T>& A, const std::vector<T>& B) {
@@ -123,9 +150,12 @@ namespace internal {
         return result;
     }
 
+    #endif
+
 
     // =========================== 2D ======================================
 
+    #ifdef __AVX2__
     // and2_simd
     template <typename T>
     std::vector<std::vector<T>> and2_simd(const std::vector<std::vector<T>>& A, const std::vector<std::vector<T>>& B) {
@@ -152,6 +182,8 @@ namespace internal {
     std::vector<std::vector<T>> andnot2_simd(const std::vector<std::vector<T>>& A, const std::vector<std::vector<T>>& B) {
         return apply_binary_op(A, B, andnot1_simd<T>);
     }
+
+    #endif
 }
 
 

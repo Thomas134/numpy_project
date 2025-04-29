@@ -6,7 +6,11 @@
 #include <algorithm>
 #include <type_traits>
 #include <stdexcept>
-#include <cblas.h>
+#ifdef __AVX2__
+    #include <cblas.h>
+#elif defined(__riscv)
+    #include <openblas/cblas.h>
+#endif
 
 namespace internal {
     // dot

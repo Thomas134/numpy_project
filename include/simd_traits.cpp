@@ -1,11 +1,14 @@
 #ifndef SIMD_TRAITS_HPP
 #define SIMD_TRAITS_HPP
 
-#include <immintrin.h>
+#ifdef __AVX2__
+    #include <immintrin.h>
+#endif
 #include <cstdint>
 #include <type_traits>
 
 
+#ifdef __AVX2__
 // inner_product_simd
 template <typename T>
 struct inner_product_simd_traits;
@@ -1295,6 +1298,8 @@ struct abs_simd_traits<double> {
         return _mm256_max_pd(_mm256_sub_pd(zero, a), a);
     }
 };
+
+#endif
 
 
 #endif

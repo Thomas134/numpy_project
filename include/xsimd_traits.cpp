@@ -1,9 +1,12 @@
 #ifndef XSIMD_TRAITS
 #define XSIMD_TRAITS
 
-#include <xsimd/xsimd.hpp>
+#ifdef __AVX2__
+    #include <xsimd/xsimd.hpp>
+#endif
 #include <type_traits>
 
+#ifdef __AVX2__
 // log_simd
 template <typename T>
 struct log_simd_traits {
@@ -323,6 +326,8 @@ struct atan_simd_traits {
         return xsimd::atan(a);
     }
 };
+
+#endif
 
 
 #endif

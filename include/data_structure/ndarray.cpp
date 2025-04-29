@@ -143,7 +143,6 @@ private:
     std::vector<T> __data;
     std::vector<size_t> __shape;
     std::vector<size_t> __strides;
-    std::optional<std::vector<std::vector<T>>> __2d_data;
     size_t __size;
 
     void compute_strides();

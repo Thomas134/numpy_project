@@ -206,9 +206,17 @@ namespace internal {
                 return std::min(a, b);
             });
 
-        return apply_binary_op_simd<T, min_simd_traits<T>>(A, B,  [](const T& a, const T& b) {
-            return std::min(a, b);
-        });        
+        #ifdef __riscv
+            return apply_binary_op_plain(A, B,  [](const T& a, const T& b) {
+                return std::min(a, b);
+            });
+        #endif
+
+        #ifdef __AVX2__
+            return apply_binary_op_simd<T, min_simd_traits<T>>(A, B,  [](const T& a, const T& b) {
+                return std::min(a, b);
+            });  
+        #endif      
     }
 
 
@@ -220,9 +228,17 @@ namespace internal {
                 return std::max(a, b);
             });
 
-        return apply_binary_op_simd<T, max_simd_traits<T>>(A, B,  [](const T& a, const T& b) {
-            return std::max(a, b);
-        });        
+        #ifdef __riscv
+            return apply_binary_op_plain(A, B,  [](const T& a, const T& b) {
+                return std::max(a, b);
+            });
+        #endif
+
+        #ifdef __AVX2__
+            return apply_binary_op_simd<T, max_simd_traits<T>>(A, B,  [](const T& a, const T& b) {
+                return std::max(a, b);
+            }); 
+        #endif       
     }
 
 
@@ -236,9 +252,17 @@ namespace internal {
                 return std::sqrt(a);
             });
 
-        return apply_unary_op_simd<T, sqrt_simd_traits<T>>(A,  [](const T& a) {
-            return std::sqrt(a);
-        });
+        #ifdef __riscv
+            return apply_unary_op_plain(A,  [](const T& a) {
+                return std::sqrt(a);
+            });
+        #endif
+
+        #ifdef __AVX2__
+            return apply_unary_op_simd<T, sqrt_simd_traits<T>>(A,  [](const T& a) {
+                return std::sqrt(a);
+            });
+        #endif
     }
 
 
@@ -250,7 +274,13 @@ namespace internal {
         if (A.size() < 32)
             return apply_unary_op_plain(A, [](const T& element) { return 1 / std::sqrt(element); });
 
-        return apply_unary_op_simd<T, rsqrt_simd_traits<T>>(A, [](const T& element) { return 1 / std::sqrt(element); });
+        #ifdef __riscv
+            return apply_unary_op_plain(A, [](const T& element) { return 1 / std::sqrt(element); });
+        #endif
+
+        #ifdef __AVX2__
+            return apply_unary_op_simd<T, rsqrt_simd_traits<T>>(A, [](const T& element) { return 1 / std::sqrt(element); });
+        #endif
     }
 
 
@@ -263,10 +293,18 @@ namespace internal {
             return apply_unary_op_plain(A, [](const T& a) {
                 return std::round(a);
             });
+
+        #ifdef __riscv
+            return apply_unary_op_plain(A, [](const T& a) {
+                return std::round(a);
+            });
+        #endif
     
-        return apply_unary_op_simd<T, round_simd_traits<T>>(A, [](const T& a) {
-            return std::round(a);
-        });
+        #ifdef __AVX2__
+            return apply_unary_op_simd<T, round_simd_traits<T>>(A, [](const T& a) {
+                return std::round(a);
+            });
+        #endif
     }
 
 
@@ -280,9 +318,17 @@ namespace internal {
                 return std::ceil(a);
             });
 
-        return apply_unary_op_simd<T, ceil_simd_traits<T>>(A, [](const T& a) {
-            return std::ceil(a);
-        });
+        #ifdef __riscv
+            return apply_unary_op_plain(A, [](const T& a) {
+                return std::ceil(a);
+            });
+        #endif
+
+        #ifdef __AVX2__
+            return apply_unary_op_simd<T, ceil_simd_traits<T>>(A, [](const T& a) {
+                return std::ceil(a);
+            });
+        #endif
     }
 
 
@@ -296,9 +342,17 @@ namespace internal {
                 return std::floor(a);
             });
 
-        return apply_unary_op_simd<T, floor_simd_traits<T>>(A, [](const T& a) {
-            return std::floor(a);
-        });
+        #ifdef __riscv
+            return apply_unary_op_plain(A, [](const T& a) {
+                return std::floor(a);
+            });
+        #endif
+
+        #ifdef __AVX2__
+            return apply_unary_op_simd<T, floor_simd_traits<T>>(A, [](const T& a) {
+                return std::floor(a);
+            });
+        #endif
     }
 
 
@@ -310,9 +364,17 @@ namespace internal {
                 return std::abs(a);
             });
 
-        return apply_unary_op_simd<T, abs_simd_traits<T>>(A, [](const T& a) {
-            return std::abs(a);
-        });
+        #ifdef __riscv
+            return apply_unary_op_plain(A, [](const T& a) {
+                return std::abs(a);
+            });
+        #endif
+
+        #ifdef __AVX2__
+            return apply_unary_op_simd<T, abs_simd_traits<T>>(A, [](const T& a) {
+                return std::abs(a);
+            });
+        #endif
     }
 
 
@@ -324,9 +386,17 @@ namespace internal {
                 return std::log(a);
             });
 
-        return apply_unary_op_simd<T, log_simd_traits<T>>(A, [](const T& a) {
-            return std::log(a);
-        });
+        #ifdef __riscv
+            return apply_unary_op_plain(A, [](const T& a) {
+                return std::log(a);
+            });
+        #endif
+
+        #ifdef __AVX2__
+            return apply_unary_op_simd<T, log_simd_traits<T>>(A, [](const T& a) {
+                return std::log(a);
+            });
+        #endif
     }
 
 
@@ -338,9 +408,17 @@ namespace internal {
                 return std::log2(a);
             });
 
-        return apply_unary_op_simd<T, log2_simd_traits<T>>(A, [](const T& a) {
-            return std::log2(a);
-        });
+        #ifdef __riscv
+            return apply_unary_op_plain(A, [](const T& a) {
+                return std::log2(a);
+            });
+        #endif
+
+        #ifdef __AVX2__
+            return apply_unary_op_simd<T, log2_simd_traits<T>>(A, [](const T& a) {
+                return std::log2(a);
+            });
+        #endif
     }
 
 
@@ -352,9 +430,17 @@ namespace internal {
                 return std::log10(a);
             });
 
-        return apply_unary_op_simd<T, log10_simd_traits<T>>(A, [](const T& a) {
-            return std::log10(a);
-        });
+        #ifdef __riscv
+            return apply_unary_op_plain(A, [](const T& a) {
+                return std::log10(a);
+            });
+        #endif
+
+        #ifdef __AVX2__
+            return apply_unary_op_simd<T, log10_simd_traits<T>>(A, [](const T& a) {
+                return std::log10(a);
+            });
+        #endif
     }
 
 
@@ -366,9 +452,17 @@ namespace internal {
                 return std::sin(a);
             });
 
-        return apply_unary_op_simd<T, sin_simd_traits<T>>(A, [](const T& a) {
-            return std::sin(a);
-        });
+        #ifdef __riscv
+            return apply_unary_op_plain(A, [](const T& a) {
+                return std::sin(a);
+            });
+        #endif
+
+        #ifdef __AVX2__
+            return apply_unary_op_simd<T, sin_simd_traits<T>>(A, [](const T& a) {
+                return std::sin(a);
+            });
+        #endif
     }
 
 
@@ -380,9 +474,17 @@ namespace internal {
                 return std::cos(a);
             });
 
-        return apply_unary_op_simd<T, cos_simd_traits<T>>(A, [](const T& a) {
-            return std::cos(a);
-        });
+        #ifdef __riscv
+            return apply_unary_op_plain(A, [](const T& a) {
+                return std::cos(a);
+            });
+        #endif
+
+        #ifdef __AVX2__
+            return apply_unary_op_simd<T, cos_simd_traits<T>>(A, [](const T& a) {
+                return std::cos(a);
+            });
+        #endif
     }
 
 
@@ -397,9 +499,17 @@ namespace internal {
                 return std::tan(a);
             });
 
-        return apply_unary_op_simd<T, tan_simd_traits<T>>(A, [](const T& a) {
-            return std::tan(a);
-        });
+        #ifdef __riscv
+            return apply_unary_op_plain(A, [](const T& a) {
+                return std::tan(a);
+            });
+        #endif
+
+        #ifdef __AVX2__
+            return apply_unary_op_simd<T, tan_simd_traits<T>>(A, [](const T& a) {
+                return std::tan(a);
+            });
+        #endif
     }
 
 
@@ -411,9 +521,17 @@ namespace internal {
                 return std::asin(a);
             });
 
-        return apply_unary_op_simd<T, asin_simd_traits<T>>(A, [](const T& a) {
-            return std::asin(a);
-        });
+        #ifdef __riscv
+            return apply_unary_op_plain(A, [](const T& a) {
+                return std::asin(a);
+            });
+        #endif
+
+        #ifdef __AVX2__
+            return apply_unary_op_simd<T, asin_simd_traits<T>>(A, [](const T& a) {
+                return std::asin(a);
+            });
+        #endif
     }
 
 
@@ -425,9 +543,17 @@ namespace internal {
                 return std::acos(a);
             });
 
-        return apply_unary_op_simd<T, acos_simd_traits<T>>(A, [](const T& a) {
-            return std::acos(a);
-        });
+        #ifdef __riscv
+            return apply_unary_op_plain(A, [](const T& a) {
+                return std::acos(a);
+            });
+        #endif
+
+        #ifdef __AVX2__
+            return apply_unary_op_simd<T, acos_simd_traits<T>>(A, [](const T& a) {
+                return std::acos(a);
+            });
+        #endif
     }
 
 
@@ -439,9 +565,17 @@ namespace internal {
                 return std::atan(a);
             });
 
-        return apply_unary_op_simd<T, atan_simd_traits<T>>(A, [](const T& a) {
-            return std::atan(a);
-        });
+        #ifdef __riscv
+            return apply_unary_op_plain(A, [](const T& a) {
+                return std::atan(a);
+            });
+        #endif
+
+        #ifdef __AVX2__
+            return apply_unary_op_simd<T, atan_simd_traits<T>>(A, [](const T& a) {
+                return std::atan(a);
+            });
+        #endif
     }
 
 
