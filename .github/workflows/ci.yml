@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+
+jobs:
+  build-and-test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install system dependencies
+        run: |
+          if [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
+            sudo apt-get update
+            sudo apt-get install -y cmake build-essential libopenblas-dev libxsimd-dev libboost-all-dev
+          elif [[ "${{ matrix.os }}" == "fedora-latest" ]]; then
+            sudo dnf update -y
+            sudo dnf install -y cmake make gcc-c++ openblas-devel xsimd-devel boost-devel
+          fi
+      
+      - name: Download and install Google Test
+        run: |
+          git clone https://github.com/google/googletest.git
+          cd googletest
+          mkdir build
+          cd build
+          cmake ..
+          make
+          sudo make install
+
+      - name: Create build directory
+        run: mkdir -p build
+
+      - name: Configure CMake
+        working-directory: build
+        run: cmake ..
+
+      - name: Build project
+        working-directory: build
+        run: make -j$(nproc)
+
+      - name: Run tests
+        working-directory: build/test
+        run: ./run_all_tests
