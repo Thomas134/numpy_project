@@ -69,6 +69,12 @@ struct dtype_traits<double> {
 };
 
 template<> 
+struct dtype_traits<long double> {
+    static constexpr const char* name = "long double";
+    static constexpr size_t size = sizeof(long double);
+};
+
+template<> 
 struct dtype_traits<char> {
     static constexpr const char* name = "char";
     static constexpr size_t size = sizeof(char);
