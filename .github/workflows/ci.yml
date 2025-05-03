@@ -16,11 +16,13 @@ jobs:
       matrix:
         container:
           - ubuntu:latest
+          - fedora:41
           - fedora:40
           - fedora:39
           - fedora:38
           - fedora:37
           - fedora:36
+
 
     container:
       image: ${{ matrix.container }}
