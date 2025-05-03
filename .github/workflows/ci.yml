@@ -20,6 +20,7 @@ jobs:
           - fedora:39
           - fedora:38
           - fedora:37
+          - fedora:36
 
     container:
       image: ${{ matrix.container }}
