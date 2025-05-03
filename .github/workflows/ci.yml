@@ -18,7 +18,7 @@ jobs:
           - ubuntu:latest
           - fedora:40
           - fedora:39
-
+          - fedora:38
 
     container:
       image: ${{ matrix.container }}
@@ -34,7 +34,7 @@ jobs:
           apt-get install -y cmake build-essential libopenblas-dev libxsimd-dev libboost-all-dev git
 
       - name: Install system dependencies (Fedora)
-        if: matrix.container == 'fedora:40' || matrix.container == 'fedora:39'
+        if: matrix.container == 'fedora:40' || matrix.container == 'fedora:39' || matrix.container == 'fedora:38'
         run: |
           dnf update -y
           dnf install -y cmake make gcc-c++ openblas-devel xsimd-devel boost-devel git
@@ -64,5 +64,4 @@ jobs:
         working-directory: build/test
         run: ./run_all_tests
         continue-on-error: true
-
     
