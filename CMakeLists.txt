@@ -36,6 +36,13 @@ include_directories(
     ${PROJECT_SOURCE_DIR}/include/data_structure
 )
 
+file(READ "/etc/os-release" OS_RELEASE_CONTENTS)
+if(OS_RELEASE_CONTENTS MATCHES "ID=ubuntu")
+    add_compile_definitions(__UBUNTU__)
+elseif(OS_RELEASE_CONTENTS MATCHES "ID=fedora")
+    add_compile_definitions(__FEDORA__)
+endif()
+
 file(GLOB_RECURSE SOURCES
     ${PROJECT_SOURCE_DIR}/include/*.cpp
     ${PROJECT_SOURCE_DIR}/include/utils/*.cpp

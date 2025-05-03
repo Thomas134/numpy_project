@@ -6,9 +6,9 @@
 #include <algorithm>
 #include <type_traits>
 #include <stdexcept>
-#ifdef __AVX2__
+#if defined(__AVX2__) && defined(__UBUNTU__)
     #include <cblas.h>
-#elif defined(__riscv)
+#elif defined(__riscv) || defined(__FEDORA__)
     #include <openblas/cblas.h>
 #endif
 
