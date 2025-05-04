@@ -45,6 +45,8 @@ elseif(OS_RELEASE_CONTENTS MATCHES "ID=debian")
     add_compile_definitions(__DEBIAN__)
 elseif(OS_RELEASE_CONTENTS MATCHES "ID=arch")
     add_compile_definitions(__ARCHLINUX__)
+elseif(OS_RELEASE_CONTENTS MATCHES "ID=kali")
+    add_compile_definitions(__KALI__)
 endif()
 
 file(GLOB_RECURSE SOURCES

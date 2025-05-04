@@ -6,7 +6,7 @@
 #include <algorithm>
 #include <type_traits>
 #include <stdexcept>
-#if defined(__AVX2__) && (defined(__UBUNTU__) || defined(__DEBIAN__))
+#if defined(__AVX2__) && (defined(__UBUNTU__) || defined(__DEBIAN__) || defined(__KALI__))
     #include <cblas.h>
 #elif defined(__riscv) || defined(__FEDORA__) || defined(__ARCHLINUX__)
     #include <openblas/cblas.h>
