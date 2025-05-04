@@ -16,6 +16,7 @@ jobs:
       matrix:
         container:
           - ubuntu:latest
+          - fedora:42
           - fedora:41
           - fedora:40
           - fedora:39
