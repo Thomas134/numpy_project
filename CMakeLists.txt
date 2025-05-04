@@ -43,6 +43,8 @@ elseif(OS_RELEASE_CONTENTS MATCHES "ID=fedora")
     add_compile_definitions(__FEDORA__)
 elseif(OS_RELEASE_CONTENTS MATCHES "ID=debian")
     add_compile_definitions(__DEBIAN__)
+elseif(OS_RELEASE_CONTENTS MATCHES "ID=arch")
+    add_compile_definitions(__ARCHLINUX__)
 endif()
 
 file(GLOB_RECURSE SOURCES

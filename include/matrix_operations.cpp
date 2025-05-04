@@ -8,7 +8,7 @@
 #include <stdexcept>
 #if defined(__AVX2__) && (defined(__UBUNTU__) || defined(__DEBIAN__))
     #include <cblas.h>
-#elif defined(__riscv) || defined(__FEDORA__)
+#elif defined(__riscv) || defined(__FEDORA__) || defined(__ARCHLINUX__)
     #include <openblas/cblas.h>
 #endif
 
