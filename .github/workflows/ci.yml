@@ -16,6 +16,7 @@ jobs:
       matrix:
         container:
           - ubuntu:latest
+          - debian:bookworm
           - fedora:42
           - fedora:41
           - fedora:40
@@ -34,6 +35,12 @@ jobs:
 
       - name: Install system dependencies (Ubuntu)
         if: matrix.container == 'ubuntu:latest'
+        run: |
+          apt-get update
+          apt-get install -y cmake build-essential libopenblas-dev libxsimd-dev libboost-all-dev git
+
+      - name: Install system dependencies (Debian)
+        if: startsWith(matrix.container, 'debian:')
         run: |
           apt-get update
           apt-get install -y cmake build-essential libopenblas-dev libxsimd-dev libboost-all-dev git

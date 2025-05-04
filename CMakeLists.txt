@@ -41,6 +41,8 @@ if(OS_RELEASE_CONTENTS MATCHES "ID=ubuntu")
     add_compile_definitions(__UBUNTU__)
 elseif(OS_RELEASE_CONTENTS MATCHES "ID=fedora")
     add_compile_definitions(__FEDORA__)
+elseif(OS_RELEASE_CONTENTS MATCHES "ID=debian")
+    add_compile_definitions(__DEBIAN__)
 endif()
 
 file(GLOB_RECURSE SOURCES
