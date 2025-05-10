@@ -71,7 +71,7 @@ jobs:
           mkdir build
           cd build
           cmake ..
-          make
+          make -j$(nproc)
           make install
 
       - name: Create build directory
