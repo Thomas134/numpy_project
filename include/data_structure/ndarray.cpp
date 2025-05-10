@@ -532,11 +532,16 @@ ndarray<T> ndarray<T>::dot(const ndarray<T>& other) {
     }
 
     std::vector<std::vector<T>> A_2d(__shape[0], std::vector<T>(__shape[1]));
-    std::vector<std::vector<T>> B_2d(__shape[0], std::vector<T>(__shape[1]));
+    std::vector<std::vector<T>> B_2d(other.__shape[0], std::vector<T>(other.__shape[1]));
 
     for (size_t i = 0; i < __shape[0]; ++i) {
         for (size_t j = 0; j < __shape[1]; ++j) {
             A_2d[i][j] = __data[calculate_offset(i, j)];
+        }
+    }
+    
+    for (size_t i = 0; i < other.__shape[0]; ++i) {
+        for (size_t j = 0; j < other.__shape[1]; ++j) {
             B_2d[i][j] = other.__data[other.calculate_offset(i, j)];
         }
     }
