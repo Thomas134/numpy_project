@@ -42,6 +42,29 @@ TEST(NDArrayDotTest, TwoDimensionalDotTest) {
     }
 }
 
+TEST(NDArrayDotTest, TwoDimensionalRectangularDotTest) {
+    std::vector<size_t> shapeA = {2, 3};
+    std::vector<size_t> shapeB = {3, 2};
+    ndarray<int> arrA(shapeA);
+    ndarray<int> arrB(shapeB);
+
+    std::vector<std::vector<int>> dataA = {{1, 2, 3}, {4, 5, 6}};
+    std::vector<std::vector<int>> dataB = {{7, 8}, {9, 10}, {11, 12}};
+    arrA.assign(dataA);
+    arrB.assign(dataB);
+
+    ndarray<int> result = arrA.dot(arrB);
+
+    std::vector<std::vector<int>> expected = manual_dot(dataA, dataB);
+    std::vector<int> resultData = result.data();
+    size_t index = 0;
+    for (const auto& row : expected) {
+        for (int value : row) {
+            EXPECT_EQ(resultData[index++], value);
+        }
+    }
+}
+
 TEST(NDArrayDotTest, MismatchDimensionTest) {
     std::vector<size_t> shapeA = {2, 3};
     std::vector<size_t> shapeB = {2, 2};
