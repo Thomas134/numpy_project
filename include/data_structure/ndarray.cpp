@@ -415,38 +415,29 @@ std::vector<uint8_t> ndarray<T>::all(int axis) const {
         size_t row = __shape[0];
         size_t col = __shape[1];
         
+        auto process_dimension = [&](size_t outer_size, size_t inner_size, 
+                            auto offset_calculator) {
+            res.resize(outer_size, 1);
+            
+            for (size_t i = 0; i < outer_size; ++i) {
+                for (size_t j = 0; j < inner_size; ++j) {
+                    size_t offset = offset_calculator(i, j);
+                    if (!__data[offset]) {
+                        res[i] = 0; 
+                        break; 
+                    }
+                }
+            }
+        };
+
         if (axis == 0) {
-            for (int i = 0; i < static_cast<int>(col); ++i) {
-                bool false_flag = false;
-                for (int j = 0; j < static_cast<int>(row); ++j) {
-                    size_t offset = calculate_offset(j, i);
-
-                    if (!__data[offset]) {
-                        false_flag = true;
-                        res.push_back(0);
-                        break;
-                    }
-                }
-
-                if (!false_flag)
-                    res.push_back(1);
-            }
+            process_dimension(col, row, [&](size_t i, size_t j) {
+                return calculate_offset(j, i);
+            });
         } else {
-            for (int i = 0; i < static_cast<int>(row); ++i) {
-                bool false_flag = false;
-                for (int j = 0; j < static_cast<int>(col); ++j) {
-                    size_t offset = calculate_offset(i, j);
-
-                    if (!__data[offset]) {
-                        false_flag = true;
-                        res.push_back(0);
-                        break;
-                    }
-                }
-
-                if (!false_flag)
-                    res.push_back(1);
-            }
+            process_dimension(row, col, [&](size_t i, size_t j) {
+                return calculate_offset(i, j);
+            });
         }
     }
 
